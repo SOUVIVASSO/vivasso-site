@@ -240,6 +240,7 @@
       if (A.ctx) { if (A.ctx.state === 'suspended') A.ctx.resume(); return; }
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
       const c = new AC(); A.ctx = c;
       A.out = c.createGain(); A.out.gain.value = 0;
       const comp = c.createDynamicsCompressor();
@@ -294,6 +295,63 @@
     tone(f, A.ctx.currentTime, 0.9, 0.06);
   }
   function cueBuzz(type) { buzz(type === 'in' ? [40] : type === 'out' ? [70] : [25]); }
+
+  /* ---------- guia para jogar de olhos fechados: voz e sons ----------
+     O som sobe enquanto voce inspira, fica firme enquanto segura e desce enquanto solta.
+     Uma voz do proprio aparelho diz o nome de cada etapa. */
+  const G = { sons: true, voz: true, vozEscolhida: null };
+  try {
+    const salvo = localStorage.getItem('vivasso_respira_guia');
+    if (salvo === 'sons') { G.voz = false; } else if (salvo === 'voz') { G.sons = false; }
+  } catch (e) {}
+  const FALA = { in: 'Inspire', hold: 'Segure', out: 'Solte o ar', hold2: 'Fique sem ar' };
+  function escolheVoz() {
+    if (!('speechSynthesis' in window)) return;
+    const vozes = speechSynthesis.getVoices() || [];
+    G.vozEscolhida = vozes.find(v => /^pt[-_]BR/i.test(v.lang)) || vozes.find(v => /^pt/i.test(v.lang)) || null;
+  }
+  if ('speechSynthesis' in window) {
+    escolheVoz();
+    try { speechSynthesis.addEventListener('voiceschanged', escolheVoz); } catch (e) {}
+  }
+  function falar(texto) {
+    if (!G.voz || !A.on || !texto || !('speechSynthesis' in window)) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(texto);
+      u.lang = 'pt-BR'; u.rate = 0.85; u.pitch = 0.95;
+      u.volume = clamp(0.4 + A.vol, 0, 1);
+      if (G.vozEscolhida) u.voice = G.vozEscolhida;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function calaGuia() {
+    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {}
+  }
+  function guide(type, seg) {
+    const c = A.ctx;
+    if (!c || !A.live || !G.sons) return;
+    const t0 = c.currentTime + 0.05;
+    const F = { in: [196, 330], out: [330, 196], hold: [294, 294], hold2: [196, 196] }[type] || [262, 262];
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(F[0], t0);
+    o.frequency.linearRampToValueAtTime(F[1], t0 + seg * 0.95);
+    const amp = (type === 'hold' || type === 'hold2') ? 0.05 : 0.14;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(amp, t0 + 0.4);
+    g.gain.setValueAtTime(amp, t0 + Math.max(seg - 0.5, 0.5));
+    g.gain.linearRampToValueAtTime(0.0001, t0 + seg);
+    o.connect(g); g.connect(A.out); g.connect(A.rev);
+    o.start(t0); o.stop(t0 + seg + 0.1);
+  }
+  function startStep() {
+    if (!sess) return;
+    const st = sess.tech.pat[stepI];
+    cue(st[0]); cueBuzz(st[0]);
+    guide(st[0], st[1]);
+    falar(FALA[st[0]]);
+  }
 
   /* ---------- tela ligada e tela cheia (os dois sao opcionais) ---------- */
   async function keepAwake(on) {
@@ -406,6 +464,7 @@
       : mode === 'belly'
         ? 'Modo Barriga (em teste): deite-se, apoie o celular com a tela para cima sobre a barriga e respire pela barriga. O celular sente o sobe e desce e o jogo avisa pelo som e pela vibração, então dá para jogar de olhos fechados. Fique o mais parado que puder. Se não responder bem, ajuste a sensibilidade ou use o modo Toque.'
         : 'Modo Toque: segure o botão enquanto solta o ar e solte para inspirar. No computador, use a barra de espaço. O som guia cada etapa, então dá para jogar de olhos fechados.';
+    $('rs-help2').textContent = 'Para jogar de olhos fechados, use fones e volume confortável. Uma voz diz o que fazer e o som sobe quando é para inspirar, fica firme ao segurar e desce ao soltar o ar. No iPhone, desligue o modo silencioso.';
   }
 
   /* ---------- microfone e controle da viagem ---------- */
@@ -429,6 +488,7 @@
     if (actx) { actx.close().catch(() => {}); actx = null; }
     analyser = null;
     bellyOff();
+    calaGuia();
     keepAwake(false);
     setUi();
   }
@@ -453,6 +513,7 @@
     $('rs-phaseSub').textContent = T.sub;
     show(null);
     keepAwake(true);
+    if (mode !== 'belly') falar('Prepare-se.');
     if (mode === 'mic') {
       calibrating = true; setUi();
       say('Pedindo acesso ao microfone…');
@@ -510,6 +571,13 @@
     $('rs-snd').textContent = A.on ? 'Som: ligado' : 'Som: desligado';
     initAudio(); applyVol();
   });
+  $('rs-guia').value = G.sons && G.voz ? 'ambos' : G.sons ? 'sons' : 'voz';
+  $('rs-guia').addEventListener('change', () => {
+    const v = $('rs-guia').value;
+    G.sons = v !== 'voz'; G.voz = v !== 'sons';
+    try { localStorage.setItem('vivasso_respira_guia', v); } catch (e) {}
+    if (G.voz) falar('Voz ligada.');
+  });
   $('rs-vol').addEventListener('input', () => { A.vol = parseFloat($('rs-vol').value); applyVol(); });
 
   const hold = $('rs-hold');
@@ -539,7 +607,7 @@
     on: false, got: 0, last: 0, init: false,
     gFast: [0, 0, 0], gSlow: [0, 0, 0], base: [0, 0, 0], baseSum: [0, 0, 0], baseN: 0,
     d: [0, 0, 1], amp: 0.2, stage: 0, stageT: 0, peak: 0, peakVec: [0, 0, 0],
-    s: 0, sPrev: 0, sd: 0, fail: null
+    s: 0, sPrev: 0, sd: 0, fail: null, msgOk: false, still: false, settle: 8
   };
   function bellyHandler(e) {
     const a = e.accelerationIncludingGravity;
@@ -565,6 +633,7 @@
       }
     } catch (e) { return 'negado'; }
     BL.got = 0; BL.last = 0; BL.init = false; BL.stage = 0; BL.stageT = 0; BL.fail = null;
+    BL.msgOk = false; BL.still = false; BL.settle = rapido ? 1 : 8;
     BL.baseSum = [0, 0, 0]; BL.baseN = 0; BL.peak = 0; BL.s = 0; BL.sPrev = 0; BL.sd = 0;
     if (!BL.on) { window.addEventListener('devicemotion', bellyHandler); BL.on = true; }
     return 'ok';
@@ -581,13 +650,24 @@
     BL.stageT += dt;
     if (BL.stage === 0) {
       if (BL.got === 0) { if (BL.stageT > 2.5) BL.fail = 'sem-sensor'; return; }
-      if (BL.baseN === 0) { say('Deite-se e apoie o celular na barriga, com a tela para cima. Fique parado…'); BL.stageT = 0; }
+      if (!BL.msgOk) {
+        BL.msgOk = true; BL.stageT = 0;
+        say('Deite-se e apoie o celular na barriga, com a tela para cima.');
+        falar('Deite-se e apoie o celular na barriga, com a tela para cima.');
+      }
+      if (!BL.still) {
+        if (BL.stageT < BL.settle) return;
+        BL.still = true; BL.stageT = 0;
+        say('Fique parado…'); falar('Fique parado.');
+        return;
+      }
       for (let i = 0; i < 3; i++) BL.baseSum[i] += BL.gFast[i];
       BL.baseN++;
       if (BL.stageT >= 2.8) {
         BL.base = BL.baseSum.map(x => x / BL.baseN);
         BL.stage = 1; BL.stageT = 0; BL.peak = 0;
         say('Agora inspire fundo, enchendo a barriga…');
+        falar('Agora inspire fundo, enchendo a barriga.');
         buzz(40);
       }
     } else if (BL.stage === 1) {
@@ -601,6 +681,7 @@
         BL.gSlow = BL.gFast.slice();
         BL.s = 0; BL.sPrev = 0; BL.sd = 0;
         say('Pronto. Solte o ar e relaxe.', 2);
+        falar('Pronto. Solte o ar e relaxe.');
         begin();
       }
     }
@@ -661,6 +742,7 @@
     if (!sess || sess.done) return;
     sess.done = true; arriveT = 3.5;
     arpeggio(); buzz([80, 60, 80, 60, 140]);
+    falar('Você chegou à ilha. Bom trabalho.');
     say('Você chegou à ilha.', 4);
   }
 
@@ -671,7 +753,7 @@
       if (arriveT <= 0) endSession();
       return;
     }
-    if (prepT > 0) { prepT -= dt; return; }
+    if (prepT > 0) { prepT -= dt; if (prepT <= 0) startStep(); return; }
     const pat = sess.tech.pat;
     sess.t += dt;
     if (sess.t >= sess.total) { sess.closing = true; sess.closeT += dt; }
@@ -687,7 +769,7 @@
       }
       stepI = (stepI + 1) % pat.length;
       stepT = 0; outBand = 0;
-      cue(pat[stepI][0]); cueBuzz(pat[stepI][0]);
+      startStep();
       if (sess.closing && stepI === 0) arrive();
     }
     if (sess.closing && sess.closeT > 12) arrive();

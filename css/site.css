@@ -553,3 +553,6 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
   .jogo-niveis li{grid-template-columns:1fr}
   .jogo-niveis li span{grid-column:1}
 }
+
+.rs-sl select{flex:1;min-width:0;font-family:inherit;font-size:14px;padding:8px 12px;border-radius:12px;border:1px solid var(--rs-line);background:rgba(255,255,255,.08);color:var(--rs-ink)}
+.rs-sl select option{color:#1d1236}

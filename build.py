@@ -674,9 +674,11 @@ RESPIRA_CORPO = """  <section class="blog-head">
           <button id="rs-hold" class="rs-hold" type="button" hidden>Segure para soltar o ar</button>
           <div class="rs-sliders">
             <label class="rs-sl" id="rs-sensRow" for="rs-sens"><span>Sensibilidade</span><input id="rs-sens" type="range" min="0.5" max="3" step="0.1" value="1.2"></label>
+            <label class="rs-sl" for="rs-guia"><span>Guia</span><select id="rs-guia"><option value="ambos">Voz e sons</option><option value="sons">Só sons</option><option value="voz">Só voz</option></select></label>
             <label class="rs-sl" for="rs-vol"><span>Volume</span><input id="rs-vol" type="range" min="0" max="1" step="0.05" value="0.5"></label>
           </div>
           <p class="rs-help" id="rs-help"></p>
+          <p class="rs-help" id="rs-help2"></p>
         </div>
       </div>
       <div class="rs-progress" id="rs-progress"></div>
