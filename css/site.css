@@ -646,3 +646,6 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
 
 /* desenhos dos assuntos: preenchem o bloco sem repetir */
 .tile,.card,.post-thumb,.post-cover{background-size:cover;background-position:center;background-repeat:no-repeat}
+
+/* titulo do topo: destaque suave na marca, sem caixa amarela */
+.hero h1 .hl{background:none;color:var(--yellow);padding:0;border-radius:0;transform:none;display:inline}
