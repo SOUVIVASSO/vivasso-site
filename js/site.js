@@ -148,6 +148,7 @@
       e.hidden = !ok;
       if (ok) n++;
     });
+    document.querySelectorAll('.ev-group').forEach(function (g) { g.hidden = !g.querySelector('.ev:not([hidden])'); });
     vazio.hidden = n > 0;
   }
   chips.forEach(function (c) {

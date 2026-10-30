@@ -298,6 +298,10 @@ def monta_home(posts):
 
 # ---------- agenda ----------
 
+ICONE_LOCAL = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>'
+ICONE_HORA = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+
+
 def carrega_agenda():
     itens = []
     for arq in sorted((ROOT / "content" / "agenda").glob("*.md")):
@@ -310,35 +314,66 @@ def carrega_agenda():
 
 def cartao_agenda(e):
     recorrente = bool(e.get("days"))
+    cat = e["category"]
     if recorrente:
-        bloco = f'<div class="ev-date"><b>{esc(e.get("weekday", ""))}</b><small>toda sem.</small></div>'
+        bloco = f'<div class="ev-date cat-{cat}"><b>{esc(e.get("weekday", ""))}</b><small>toda semana</small></div>'
         quando = e.get("when", "")
     else:
         y, m, d = (int(x) for x in e["date"].split("-"))
-        bloco = f'<div class="ev-date"><b>{d}</b><small>{MESES[m - 1][:3]}</small></div>'
+        bloco = f'<div class="ev-date cat-{cat}"><b>{d}</b><small>{MESES[m - 1][:3]}</small></div>'
         quando = e.get("time", "")
     preco = e.get("price", "")
     gratis = "1" if preco.lower().startswith("gr") else "0"
-    local = " · ".join(x for x in (e.get("local", ""), e.get("bairro", "")) if x)
-    linha = " · ".join(x for x in (local, quando) if x)
+    meta = []
+    if e.get("local") or e.get("bairro"):
+        meta.append(f'<li>{ICONE_LOCAL}<span>{esc(" · ".join(x for x in (e.get("local", ""), e.get("bairro", "")) if x))}</span></li>')
+    if quando:
+        meta.append(f'<li>{ICONE_HORA}<span>{esc(quando)}</span></li>')
+    meta_html = f'<ul class="ev-meta">{"".join(meta)}</ul>' if meta else ""
     exemplo = '<span class="tag tag-demo">Exemplo</span>' if e.get("demo") else ""
     nota = f'<p class="ev-note">{esc(e["note"])}</p>' if e.get("note") else ""
     link = e.get("link", "")
-    ver = (f'<a class="link" href="{esc(link)}" target="_blank" rel="noopener">{esc(e.get("link_text", "Ver detalhes"))}</a>'
-           if link else "")
-    classe_preco = "ev-price free" if gratis == "1" else "ev-price"
-    pill = f'<div class="{classe_preco}">{esc(preco)}</div>' if preco else ""
-    return f"""      <article class="ev" data-cat="{e['category']}" data-bairro="{esc(e.get('bairro', ''))}" data-date="{e.get('date', '')}" data-end="{e.get('end', '')}" data-days="{esc(e.get('days', ''))}" data-free="{gratis}">
-        {bloco}
-        <div class="ev-body">
-          <div class="ev-tags"><span class="tag cat-{e['category']}">{esc(CAT_NOME.get(e['category'], e['category']))}</span>{exemplo}</div>
-          <h3>{esc(e['title'])}</h3>
-          <p>{esc(linha)}</p>
-          {nota}
-          {ver}
+    botao = (f'<a class="ev-btn" href="{esc(link)}" target="_blank" rel="noopener">{esc(e.get("link_text", "Ver detalhes"))} <span aria-hidden="true">→</span></a>'
+             if link else "")
+    pill = f'<span class="ev-price{" free" if gratis == "1" else ""}">{esc(preco)}</span>' if preco else ""
+    return f"""        <article class="ev" data-cat="{cat}" data-bairro="{esc(e.get('bairro', ''))}" data-date="{e.get('date', '')}" data-end="{e.get('end', '')}" data-days="{esc(e.get('days', ''))}" data-free="{gratis}">
+          {bloco}
+          <div class="ev-body">
+            <div class="ev-tags"><span class="tag cat-{cat}">{esc(CAT_NOME.get(cat, cat))}</span>{exemplo}</div>
+            <h3>{esc(e['title'])}</h3>
+            {meta_html}
+            {nota}
+          </div>
+          <div class="ev-side">
+            {pill}
+            {botao}
+          </div>
+        </article>"""
+
+
+def grupos_agenda(itens):
+    """Agrupa por mes e deixa os eventos semanais num bloco proprio."""
+    grupos, ordem = {}, []
+    for e in itens:
+        if e.get("days"):
+            chave = "Toda semana"
+        else:
+            y, m, _ = (int(x) for x in e["date"].split("-"))
+            chave = f"{MESES[m - 1].capitalize()} de {y}"
+        if chave not in grupos:
+            grupos[chave] = []
+            ordem.append(chave)
+        grupos[chave].append(e)
+    saida = []
+    for chave in ordem:
+        cards = "\n".join(cartao_agenda(e) for e in grupos[chave])
+        saida.append(f"""      <section class="ev-group">
+        <h2 class="ev-group-title">{esc(chave)}</h2>
+        <div class="ev-group-list">
+{cards}
         </div>
-        {pill}
-      </article>"""
+      </section>""")
+    return "\n".join(saida)
 
 
 def monta_agenda(itens):
@@ -347,13 +382,11 @@ def monta_agenda(itens):
     chips = '<button type="button" class="chip on" data-filter="todos">Todos</button>' + "".join(
         f'<button type="button" class="chip" data-filter="{s}">{esc(n)}</button>' for s, n in cats)
     bairros = sorted({e.get("bairro", "") for e in itens if e.get("bairro")})
-    filtro_bairro = ""
     if bairros:
         opcoes = '<option value="">Todos os bairros</option>' + "".join(f"<option>{esc(b)}</option>" for b in bairros)
         filtro_bairro = f'<select id="f-bairro" aria-label="Bairro">{opcoes}</select>'
     else:
         filtro_bairro = '<select id="f-bairro" aria-label="Bairro" hidden><option value=""></option></select>'
-    cards = "\n".join(cartao_agenda(e) for e in itens)
     aviso = ""
     if any(e.get("demo") for e in itens):
         aviso = '<p class="demo-note">Os eventos marcados como Exemplo são só para testar o visual.</p>'
@@ -378,8 +411,8 @@ def monta_agenda(itens):
   </section>
   <section class="blog-list">
     <div class="wrap">
-      <div class="ev-list" id="ev-list">
-{cards}
+      <div id="ev-list">
+{grupos_agenda(itens)}
       </div>
       <p class="vazio" id="ev-vazio" hidden>Nada por aqui com esses filtros. Tente outro dia ou outro assunto.</p>
       <p class="agenda-aviso">Datas, horários e preços podem mudar. Confira sempre no link de cada evento antes de se programar. Informações conferidas em 30 de outubro de 2026.</p>
