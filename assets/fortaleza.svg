@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a2a78"/>
+      <stop offset=".35" stop-color="#b0558f"/>
+      <stop offset=".62" stop-color="#ff8a5c"/>
+      <stop offset=".82" stop-color="#ffc24a"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffb04a"/>
+      <stop offset=".25" stop-color="#e0668a"/>
+      <stop offset="1" stop-color="#2b3f8c"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff6c8"/>
+      <stop offset=".5" stop-color="#ffd25a"/>
+      <stop offset="1" stop-color="#ffd25a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1030" cy="520" r="330" fill="url(#sun)" opacity=".85"/>
+  <circle cx="1030" cy="520" r="92" fill="#fff1b8"/>
+
+  <!-- nuvens -->
+  <g fill="#ffffff" opacity=".22">
+    <ellipse cx="320" cy="250" rx="220" ry="26"/>
+    <ellipse cx="470" cy="290" rx="170" ry="20"/>
+    <ellipse cx="1280" cy="200" rx="240" ry="24"/>
+    <ellipse cx="1140" cy="245" rx="150" ry="18"/>
+  </g>
+
+  <!-- mar -->
+  <rect y="560" width="1600" height="340" fill="url(#sea)"/>
+  <g stroke="#fff1b8" stroke-linecap="round" opacity=".7">
+    <path d="M960 590h140" stroke-width="7"/>
+    <path d="M930 620h200" stroke-width="6"/>
+    <path d="M900 654h260" stroke-width="5"/>
+    <path d="M870 692h320" stroke-width="4"/>
+    <path d="M830 736h400" stroke-width="3"/>
+  </g>
+
+  <!-- skyline de Fortaleza (esquerda) -->
+  <g fill="#2a1f5c">
+    <rect x="0" y="470" width="70" height="110"/>
+    <rect x="62" y="420" width="54" height="160"/>
+    <rect x="110" y="380" width="64" height="200"/>
+    <rect x="168" y="445" width="48" height="135"/>
+    <rect x="210" y="350" width="58" height="230"/>
+    <rect x="262" y="410" width="70" height="170"/>
+    <rect x="326" y="465" width="52" height="115"/>
+    <rect x="372" y="430" width="60" height="150"/>
+    <rect x="428" y="485" width="66" height="95"/>
+    <rect x="490" y="455" width="44" height="125"/>
+  </g>
+  <g fill="#ffd27a" opacity=".8">
+    <rect x="120" y="400" width="8" height="10"/><rect x="140" y="420" width="8" height="10"/><rect x="120" y="450" width="8" height="10"/>
+    <rect x="224" y="372" width="8" height="10"/><rect x="242" y="400" width="8" height="10"/><rect x="224" y="440" width="8" height="10"/>
+    <rect x="276" y="430" width="8" height="10"/><rect x="298" y="460" width="8" height="10"/>
+    <rect x="76" y="450" width="8" height="10"/><rect x="380" y="455" width="8" height="10"/>
+  </g>
+
+  <!-- faixa de areia -->
+  <path d="M0 560 C300 540 520 585 760 575 C560 640 280 690 0 700 Z" fill="#f4c27a" opacity=".9"/>
+  <path d="M0 640 C260 610 520 650 700 640 C480 720 240 760 0 770 Z" fill="#e8a45d"/>
+
+  <!-- jangada -->
+  <g transform="translate(1180 600)">
+    <path d="M-150 60 L150 60 L120 86 L-120 86 Z" fill="#2a1f5c"/>
+    <rect x="-4" y="-150" width="8" height="210" fill="#2a1f5c"/>
+    <path d="M6 -140 L120 40 L6 40 Z" fill="#fff6e4"/>
+    <path d="M-6 -110 L-96 40 L-6 40 Z" fill="#ff7a7a"/>
+  </g>
+
+  <!-- coqueiros -->
+  <g fill="#1d1448" stroke="#1d1448" stroke-linecap="round">
+    <path d="M1400 900 C1380 700 1400 540 1450 420" fill="none" stroke-width="22"/>
+    <path d="M1450 420 C1380 380 1310 400 1250 470 C1330 430 1390 430 1450 420Z"/>
+    <path d="M1450 420 C1520 360 1600 370 1660 440 C1590 400 1520 395 1450 420Z"/>
+    <path d="M1450 420 C1450 340 1500 290 1580 280 C1520 320 1480 360 1450 420Z"/>
+    <path d="M1450 420 C1420 340 1360 300 1290 300 C1350 330 1400 370 1450 420Z"/>
+    <path d="M1450 420 C1400 440 1360 500 1350 570 C1390 500 1420 470 1450 420Z"/>
+
+    <path d="M1240 900 C1250 760 1230 660 1200 590" fill="none" stroke-width="14"/>
+    <path d="M1200 590 C1150 560 1100 570 1060 620 C1120 590 1160 585 1200 590Z"/>
+    <path d="M1200 590 C1250 550 1310 560 1350 610 C1300 580 1250 575 1200 590Z"/>
+    <path d="M1200 590 C1200 530 1230 500 1280 495 C1240 525 1215 555 1200 590Z"/>
+  </g>
+</svg>

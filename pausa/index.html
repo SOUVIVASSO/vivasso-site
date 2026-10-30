@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pausa | Vivasso</title>
+<meta name="description" content="Pausas rápidas de bem-estar: respiração guiada, movimento leve e um quiz de autoconhecimento.">
+<link rel="canonical" href="https://vivasso.com.br/pausa/">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pausa | Vivasso">
+<meta property="og:description" content="Pausas rápidas de bem-estar: respiração guiada, movimento leve e um quiz de autoconhecimento.">
+<meta property="og:url" content="https://vivasso.com.br/pausa/">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://vivasso.com.br/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css?v=1793364332">
+
+</head>
+<body class="inner">
+<header class="nav" id="nav">
+  <a class="logo" href="/" aria-label="Vivasso, página inicial">
+    <img class="logo-on-dark" src="/assets/marca-branco.png" alt="Vivasso">
+    <img class="logo-on-light" src="/assets/marca-preto.png" alt="">
+  </a>
+  <nav class="nav-links" aria-label="Principal">
+    <a href="/agenda/">Agenda</a>
+    <a href="/cupons/">Cupons</a>
+    <a href="/pausa/">Pausa</a>
+    <a href="/selos/">Selos</a>
+    <a href="/blog/">Revista</a>
+    <a href="/#projetos">Projetos</a>
+    <a href="/#sobre">Sobre</a>
+    <a class="pill pill-sm" href="/#contato">Fale com a gente</a>
+  </nav>
+</header>
+<main id="top">
+  <section class="blog-head">
+    <div class="wrap">
+      <p class="eyebrow">Pausa</p>
+      <h1>Um respiro no <span class="hl-serif">meio do dia</span></h1>
+      <p>Três pausas rápidas para você usar agora. Não substituem o cuidado de um profissional de saúde.</p>
+      <p class="pausa-count" id="pausa-count" hidden></p>
+    </div>
+  </section>
+
+  <section class="blog-list pausa">
+    <div class="wrap pausa-grid">
+
+      <article class="pausa-card" id="respirar">
+        <span class="tag">1 minuto</span>
+        <h2>Respiração guiada</h2>
+        <p>Inspire pelo nariz, segure e solte devagar pela boca. Cinco rodadas.</p>
+        <div class="breath" id="breath" aria-live="polite">
+          <div class="breath-circle" id="breath-circle"></div>
+          <div class="breath-text" id="breath-text">Pronto?</div>
+        </div>
+        <div class="pausa-actions">
+          <button type="button" class="pill" id="breath-btn">Começar</button>
+        </div>
+      </article>
+
+      <article class="pausa-card" id="mover">
+        <span class="tag">2 minutos</span>
+        <h2>Pausa para mover</h2>
+        <p>Cinco movimentos leves para quem passou tempo demais sentado. Se algo doer, pare.</p>
+        <div class="step-box" id="move-box" aria-live="polite">
+          <div class="step-count" id="move-count"></div>
+          <div class="step-text" id="move-text">Pronto para se alongar?</div>
+        </div>
+        <div class="pausa-actions">
+          <button type="button" class="pill" id="move-btn">Começar</button>
+        </div>
+      </article>
+
+      <article class="pausa-card pausa-wide" id="quiz">
+        <span class="tag">Autoconhecimento</span>
+        <h2>De qual pausa você precisa hoje?</h2>
+        <p>Três perguntas rápidas. Sem certo ou errado.</p>
+        <div id="quiz-area"></div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="pausa-help">
+    <div class="wrap">
+      <p>Se você está passando por um momento difícil, fale com alguém. O CVV atende 24 horas, de graça, pelo telefone <b>188</b> ou em <a href="https://www.cvv.org.br" target="_blank" rel="noopener">cvv.org.br</a>.</p>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <svg class="curve curve-top" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,0 L1440,0 L1440,40 C1180,110 820,60 520,90 C300,110 120,70 0,40 Z" fill="var(--paper)"/>
+    </svg>
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img class="logo-footer" src="/assets/logo-branco.png" alt="Vivasso, viva sua marca viva">
+      <p>Agência de marketing de wellness. Bem-estar para o corpo, a mente e a cidade.</p>
+    </div>
+    <nav aria-label="Navegue">
+      <h4>Navegue</h4>
+      <a href="/agenda/">Agenda</a>
+      <a href="/cupons/">Cupons</a>
+      <a href="/pausa/">Pausa</a>
+      <a href="/selos/">Meus selos</a>
+      <a href="/blog/">Revista</a>
+      <a href="/#projetos">Projetos</a>
+      <a href="/#sobre">Sobre</a>
+      <a href="/#contato">Contato</a>
+    </nav>
+    <nav aria-label="Informações legais">
+      <h4>Legal</h4>
+      <a href="/privacidade/">Política de Privacidade</a>
+      <a href="/termos/">Termos de Uso</a>
+      <a href="/cookies/">Política de Cookies</a>
+      <button type="button" class="linklike" data-cookie-open>Gerenciar cookies</button>
+    </nav>
+    <nav aria-label="Contato">
+      <h4>Fale com a gente</h4>
+      <a href="mailto:contato@vivasso.com.br">contato@vivasso.com.br</a>
+      <a href="https://instagram.com/souvivasso" target="_blank" rel="noopener">@souvivasso</a>
+    </nav>
+  </div>
+  <div class="wrap footer-bottom">
+    <small>© 2026 Vivasso. Todos os direitos reservados.</small>
+    <small>Marcas e imagens de terceiros pertencem aos seus respectivos titulares.</small>
+  </div>
+</footer>
+<div class="cookie" id="cookie" role="dialog" aria-live="polite" aria-label="Aviso de cookies" hidden>
+  <p><strong>Cookies, rapidinho.</strong> Usamos cookies essenciais para o site funcionar e, se você deixar, cookies de estatísticas para melhorar o conteúdo. Saiba mais na <a href="/cookies/">Política de Cookies</a>.</p>
+  <div class="cookie-actions">
+    <button type="button" class="pill pill-sm pill-dark" data-cookie="all">Aceitar tudo</button>
+    <button type="button" class="pill pill-sm pill-outline" data-cookie="essential">Só os essenciais</button>
+  </div>
+</div>
+<script src="/js/selos.js?v=1793364332"></script>
+<script src="/js/site.js?v=1793364332"></script>
+</body>
+</html>
