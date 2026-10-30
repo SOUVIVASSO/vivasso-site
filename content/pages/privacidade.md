@@ -16,6 +16,7 @@ O site não tem cadastro nem área de login. Por isso, coletamos pouco:
 - **Dados que você envia:** nome, e-mail e mensagem, quando você nos escreve por e-mail ou pelas redes sociais.
 - **Dados de navegação:** informações técnicas como endereço IP, tipo de navegador, páginas acessadas e horário. Servem para manter o site seguro e funcionando.
 - **Dados no seu aparelho:** os selos, a sequência de visitas e o contador de pausas ficam só no seu aparelho. Não enviamos esses dados para a Vivasso.
+- **Microfone, só no jogo Respira:** se você escolher o modo Sopro, o navegador pede permissão para usar o microfone. O som é analisado ali mesmo para perceber o seu sopro. Ele não é gravado nem enviado para a Vivasso. O progresso do jogo também fica só no seu aparelho.
 - **Cookies:** pequenos arquivos salvos no seu navegador. Veja a [Política de Cookies](/cookies/).
 
 ## Para que usamos

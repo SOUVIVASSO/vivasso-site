@@ -8,6 +8,8 @@
     { id: 'cupom', nome: 'Cupom no bolso', como: 'Copie o código de um cupom.', cor: '#c98a0e', marca: '%' },
     { id: 'leitor', nome: 'Leitor da semana', como: 'Abra uma matéria da revista.', cor: '#c9709b', marca: 'V' },
     { id: 'explorador', nome: 'Explorador', como: 'Visite Agenda, Cupons, Pausa e Revista.', cor: '#3f9a8f', marca: '4' },
+    { id: 'primeira-viagem', nome: 'Primeira viagem', como: 'Chegue à ilha no jogo Respira.', cor: '#2c7a70', marca: 'R' },
+    { id: 'jangadeiro', nome: 'Mestre do vento', como: 'Chegue ao nível 3 no jogo Respira.', cor: '#b04d82', marca: 'N3' },
     { id: 'dias-3', nome: '3 dias seguidos', como: 'Volte ao site 3 dias seguidos.', cor: '#1079aa', marca: '3' },
     { id: 'dias-7', nome: '7 dias seguidos', como: 'Volte ao site 7 dias seguidos.', cor: '#8e74c8', marca: '7' },
     { id: 'dias-30', nome: '30 dias seguidos', como: 'Volte ao site 30 dias seguidos.', cor: '#16131f', marca: '30' }
@@ -71,6 +73,8 @@
       'cupom': !!s.flags.cupom,
       'leitor': !!s.flags.leitor,
       'explorador': AREAS.every(function (a) { return s.areas[a]; }),
+      'primeira-viagem': !!s.flags.viagem,
+      'jangadeiro': !!s.flags.nivel3,
       'dias-3': s.melhor >= 3,
       'dias-7': s.melhor >= 7,
       'dias-30': s.melhor >= 30
@@ -99,6 +103,8 @@
         if (nome === 'pausa') s.pausas += 1;
         if (nome === 'quiz') s.flags.quiz = true;
         if (nome === 'cupom') s.flags.cupom = true;
+        if (nome === 'viagem') { s.pausas += 1; s.flags.viagem = true; }
+        if (nome === 'nivel3') s.flags.nivel3 = true;
       });
     }
   };

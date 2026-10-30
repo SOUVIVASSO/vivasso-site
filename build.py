@@ -534,6 +534,13 @@ PAUSA_CORPO = """  <section class="blog-head">
   <section class="blog-list pausa">
     <div class="wrap pausa-grid">
 
+      <a class="pausa-jogo" href="/jogos/respira/">
+        <span class="tag">Jogo</span>
+        <h2>Respira, a viagem</h2>
+        <p>Uma jangada no mar de Fortaleza que anda com a sua respiração. Suba de nível e salve o seu progresso.</p>
+        <span class="pausa-jogo-cta">Jogar agora <span aria-hidden="true">→</span></span>
+      </a>
+
       <article class="pausa-card" id="respirar">
         <span class="tag">1 minuto</span>
         <h2>Respiração guiada</h2>
@@ -615,6 +622,64 @@ def monta_404():
     </div>
   </section>"""
     return pagina("Página não encontrada", "Página não encontrada.", corpo, "/404.html", body_class="inner")
+
+
+# ---------- jogo respira ----------
+
+RESPIRA_CORPO = """  <section class="blog-head">
+    <div class="wrap">
+      <p class="eyebrow">Jogo</p>
+      <h1>Respira, a <span class="hl-serif">viagem</span></h1>
+      <p>Uma jangada, o mar de Fortaleza e a sua respiração. Respire no ritmo certo e chegue à ilha. Seu progresso fica salvo neste aparelho.</p>
+    </div>
+  </section>
+  <section class="blog-list">
+    <div class="wrap">
+      <div class="respira" id="respira">
+        <div class="rs-stage" id="rs-stage">
+          <canvas id="rs-cv" role="img" aria-label="Uma jangada de vela triangular navegando num mar que muda de cor conforme a hora do dia, em direção a uma ilha"></canvas>
+          <div class="rs-hud" id="rs-hud" hidden>
+            <div class="rs-phase"><span id="rs-phaseLbl"></span><span id="rs-phaseSub"></span></div>
+            <div class="rs-prog" aria-hidden="true"><i id="rs-progBar"></i></div>
+            <dl class="rs-stats">
+              <div><dt>Tempo</dt><dd id="rs-sTime">0:00</dd></div>
+              <div><dt>Ciclos</dt><dd id="rs-sCyc">0</dd></div>
+              <div><dt>Calma</dt><dd id="rs-sCalm">-</dd></div>
+              <div><dt>Melhor</dt><dd id="rs-sBest">-</dd></div>
+            </dl>
+            <p class="rs-msg" id="rs-msg" aria-live="polite"></p>
+          </div>
+          <div class="rs-overlay" id="rs-overlay"><section class="rs-card" id="rs-card" aria-live="polite"></section></div>
+        </div>
+        <div class="rs-controls">
+          <div class="rs-row">
+            <div class="rs-seg" id="rs-seg" role="group" aria-label="Modo de jogo">
+              <button id="rs-mMic" type="button" aria-pressed="true">Sopro</button>
+              <button id="rs-mTouch" type="button" aria-pressed="false">Toque</button>
+            </div>
+            <button id="rs-snd" class="rs-pill" type="button" aria-pressed="true">Som: ligado</button>
+            <button id="rs-fs" class="rs-pill" type="button" hidden>Tela cheia</button>
+            <button id="rs-stop" class="rs-ghost" type="button" hidden>Encerrar</button>
+          </div>
+          <button id="rs-hold" class="rs-hold" type="button" hidden>Segure para soltar o ar</button>
+          <div class="rs-sliders">
+            <label class="rs-sl" id="rs-sensRow" for="rs-sens"><span>Sensibilidade</span><input id="rs-sens" type="range" min="0.5" max="3" step="0.1" value="1.2"></label>
+            <label class="rs-sl" for="rs-vol"><span>Volume</span><input id="rs-vol" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+          </div>
+          <p class="rs-help" id="rs-help"></p>
+        </div>
+      </div>
+      <div class="rs-progress" id="rs-progress"></div>
+      <p class="agenda-aviso">O Respira é um jogo de relaxamento e não substitui o cuidado de um profissional de saúde. Se você está passando por um momento difícil, procure ajuda. O CVV atende 24 horas pelo telefone 188.</p>
+      <p><a class="link" href="/pausa/">Ver outras pausas</a></p>
+    </div>
+  </section>
+  <script src="/js/respira.js?v={VERSAO}"></script>"""
+
+
+def monta_respira():
+    return pagina("Respira", "Respira, o jogo de respiração da Vivasso: uma jangada, o mar de Fortaleza e o seu ritmo. Progresso salvo no aparelho.",
+                  RESPIRA_CORPO.replace("{VERSAO}", VERSAO), "/jogos/respira/", body_class="inner")
 
 
 def cartao_blog(p):
@@ -714,9 +779,10 @@ def main():
     escreve("/cupons/", monta_cupons(carrega_cupons()))
     escreve("/pausa/", monta_pausa())
     escreve("/selos/", monta_selos())
+    escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/agenda/", "/cupons/", "/pausa/", "/selos/", "/blog/"]
+    urls = ["/", "/agenda/", "/cupons/", "/pausa/", "/selos/", "/jogos/respira/", "/blog/"]
     for p in posts:
         escreve(f"/blog/{p['slug']}/", monta_post(p))
         urls.append(f"/blog/{p['slug']}/")
