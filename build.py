@@ -10,6 +10,7 @@ Uso: python build.py
 Sem dependências externas.
 """
 import html
+import json
 import re
 import time
 from datetime import date
@@ -102,12 +103,11 @@ def header(home):
     <img class="logo-on-dark" src="/assets/marca-branco.png" alt="Vivasso">
     <img class="logo-on-light" src="/assets/marca-preto.png" alt="">
   </a>
-  <nav class="nav-links" aria-label="Principal">
+  <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+  <nav class="nav-links" id="nav-links" aria-label="Principal">
     <a href="/agenda/">Agenda</a>
-    <a href="/cupons/">Cupons</a>
+    <a href="/revista/">Revista</a>
     <a href="/jogos/">Jogos</a>
-    <a href="/selos/">Selos</a>
-    <a href="/blog/">Revista</a>
     <a href="{prefixo}#projetos">Projetos</a>
     <a href="{prefixo}#sobre">Sobre</a>
     <a class="pill pill-sm" href="{prefixo}#contato">Fale com a gente</a>
@@ -132,7 +132,7 @@ def footer(home):
       <a href="/cupons/">Cupons</a>
       <a href="/jogos/">Jogos</a>
       <a href="/selos/">Meus selos</a>
-      <a href="/blog/">Revista</a>
+      <a href="/revista/">Revista</a>
       <a href="/#projetos">Projetos</a>
       <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
@@ -261,57 +261,69 @@ def carrega_destaque():
 
 
 def monta_home(posts):
-    por_cat = {slug: [p for p in posts if p["category"] == slug] for slug, _ in CATEGORIAS}
+    agenda = carrega_agenda()
+    por_cat = {slug: [e for e in agenda if e["category"] == slug] for slug, _ in CATEGORIAS}
 
     tiles = []
     for slug, nome in CATEGORIAS:
         if slug == "cupons":
-            n = len(carrega_cupons())
-            contagem = "em breve" if n == 0 else f"{n} {'oferta' if n == 1 else 'ofertas'}"
-        else:
-            n = len(por_cat[slug])
-            contagem = "em breve" if n == 0 else f"{n} {'texto' if n == 1 else 'textos'}"
-        tiles.append(f"""        <a class="tile cat-{slug}" href="{'/cupons/' if slug == 'cupons' else '/blog/?categoria=' + slug}"{estilo_img(imagem_cat(slug))}>
+            continue
+        n = len(por_cat[slug])
+        contagem = "em breve" if n == 0 else f"{n} {'evento' if n == 1 else 'eventos'}"
+        destino = f"/agenda/?categoria={slug}" if n else "/agenda/"
+        tiles.append(f"""        <a class="tile cat-{slug}" href="{destino}"{estilo_img(imagem_cat(slug))}>
           <b>{esc(nome)}</b><small>{contagem}</small>
         </a>""")
-
-    cards = [cartao_home(slug, por_cat[slug], i) for i, (slug, _) in enumerate(CATEGORIAS)]
-    if not posts:
-        cards = ["""        <a class="card card-solo" href="/blog/">
-          <span class="tag">Viva Vivasso</span>
-          <h3>A próxima edição está a caminho</h3>
-          <p>Toda semana, uma revista nova sobre bem-estar e o que vale a pena viver na cidade.</p>
-          <i class="arrow">→</i>
-        </a>"""]
 
     hero_card = ""
     destaque = carrega_destaque()
     if destaque:
         externo = destaque["link"].startswith("http")
         alvo = ' target="_blank" rel="noopener"' if externo else ""
-        hero_card = f"""<a class="hero-card" href="{esc(destaque['link'])}"{alvo}>
-      <span class="tag">{esc(destaque.get('label', 'Destaque'))}</span>
-      <strong>{esc(destaque['title'])}</strong>
-      <small>{esc(destaque.get('subtitle', ''))}</small>
-      <i class="arrow">→</i>
-    </a>"""
-    elif posts:
-        p = posts[0]
-        rotulo = p.get("series") or CAT_NOME.get(p["category"], "Novo")
-        hero_card = f"""<a class="hero-card" href="/blog/{p['slug']}/">
-      <span class="tag">{esc(rotulo)}</span>
-      <strong>{esc(p['title'].split(':')[0])}</strong>
-      <small>{data_extenso(p['date'])}</small>
-      <i class="arrow">→</i>
-    </a>"""
+        hero_card = f"""<div class="hero-destaque">
+      <p class="hero-destaque-titulo">Eventos em destaque</p>
+      <a class="hero-card" href="{esc(destaque['link'])}"{alvo}>
+        <span class="tag">{esc(destaque.get('label', 'Destaque'))}</span>
+        <strong>{esc(destaque['title'])}</strong>
+        <small>{esc(destaque.get('subtitle', ''))}</small>
+        <i class="arrow">→</i>
+      </a>
+    </div>"""
+
+    eds = carrega_revista()
+    revista = ""
+    if eds:
+        capas = "".join(
+            f'<a class="rev-capa" href="/revista/edicao-{e["num"]}/"><img src="/assets/revista/{e["num"]}/capa.webp" '
+            f'alt="Capa da edição {int(e["num"])} da Viva Vivasso" loading="lazy" width="{e["capa_largura"]}" height="{e["capa_altura"]}">'
+            f'<span>#{e["num"]}</span></a>' for e in eds[:4])
+        revista = f'<div class="rev-capas">{capas}</div>'
+
+    hoje = date.today().isoformat()
+    cupons = [c for c in carrega_cupons() if not c.get("until") or c["until"] >= hoje][:3]
+    cupons_secao = ""
+    if cupons:
+        cartoes = "".join(
+            f'<a class="cp-mini" data-until="{esc(c.get("until", ""))}" href="/cupons/">'
+            f'<small>{esc(c.get("partner", ""))}</small><b>{esc(c["title"])}</b><span>{esc(c.get("offer", ""))}</span></a>'
+            for c in cupons)
+        cupons_secao = f"""  <section class="cupons-destaque" id="cupons-destaque">
+    <div class="wrap">
+      <p class="eyebrow">Cupons em destaque</p>
+      <h2 class="section-title">Descontos que <span class="hl-serif">fazem bem</span></h2>
+      <div class="cp-minis">{cartoes}</div>
+      <p><a class="link" href="/cupons/">Ver todos os cupons →</a></p>
+    </div>
+  </section>"""
 
     corpo = (ROOT / "templates" / "home.html").read_text(encoding="utf-8")
     corpo = (corpo.replace("{{HERO_CARD}}", hero_card)
                   .replace("{{EXPLORE}}", "\n".join(tiles))
-                  .replace("{{NOVIDADES}}", "\n".join(cards)))
+                  .replace("{{REVISTA}}", revista)
+                  .replace("{{CUPONS_SECAO}}", cupons_secao))
     return pagina(
         "Vivasso",
-        "Vivasso é uma agência de marketing de wellness. Revista semanal, dicas, passeios e cupons para viver bem a cidade.",
+        "Vivasso é uma agência de marketing de wellness. Agenda, revista, jogos e cupons para viver bem a cidade.",
         corpo, "/", home=True)
 
 
@@ -518,6 +530,98 @@ def monta_cupons(itens):
   </section>"""
     return pagina("Cupons", "Cupons de desconto de lugares e profissionais de bem-estar parceiros da Vivasso.",
                   corpo, "/cupons/", body_class="inner")
+
+
+# ---------- revista (catalogo e leitor que folheia) ----------
+
+def carrega_revista():
+    """Cada edicao fica em assets/revista/<numero>/ com info.json, capa.webp e p01.webp, p02.webp..."""
+    base = ROOT / "assets" / "revista"
+    eds = []
+    if base.exists():
+        for d in sorted(base.iterdir(), reverse=True):
+            info = d / "info.json"
+            if d.is_dir() and info.exists():
+                meta = json.loads(info.read_text(encoding="utf-8"))
+                meta["num"] = d.name
+                eds.append(meta)
+    return eds
+
+
+def monta_revista(eds):
+    if eds:
+        cards = []
+        for i, e in enumerate(eds):
+            novo = '<span class="rev-novo">Mais recente</span>' if i == 0 else ""
+            cards.append(f"""        <a class="rev-card" href="/revista/edicao-{e['num']}/">
+          <span class="rev-moldura"><img src="/assets/revista/{e['num']}/capa.webp" alt="Capa da edição {int(e['num'])} da Viva Vivasso" loading="lazy" width="{e['capa_largura']}" height="{e['capa_altura']}">{novo}</span>
+          <b>Edição {int(e['num'])}</b>
+          <small>{e['paginas']} páginas</small>
+        </a>""")
+        lista = f'<div class="rev-grade">\n{chr(10).join(cards)}\n      </div>'
+    else:
+        lista = f"""<div class="rev-vazio">
+        <h2>O catálogo está sendo montado</h2>
+        <p>Em breve você poderá folhear todas as edições da Viva Vivasso aqui, como numa revista de verdade. Enquanto isso, acompanhe a revista no nosso Instagram.</p>
+        <p><a class="pill" href="{INSTAGRAM}" target="_blank" rel="noopener">Ver no Instagram <span aria-hidden="true">→</span></a></p>
+      </div>"""
+    corpo = f"""  <section class="blog-head">
+    <div class="wrap">
+      <p class="eyebrow">Revista</p>
+      <h1>Viva <span class="hl-serif">Vivasso</span></h1>
+      <p>A nossa revista sobre bem-estar e o que acontece na cidade. Escolha uma edição e folheie.</p>
+    </div>
+  </section>
+  <section class="blog-list">
+    <div class="wrap">
+      {lista}
+    </div>
+  </section>"""
+    return pagina("Revista", "Viva Vivasso, a revista da Vivasso sobre bem-estar e o que acontece na cidade. Folheie todas as edições.",
+                  corpo, "/revista/", body_class="inner")
+
+
+def monta_edicao(e):
+    num, n = e["num"], e["paginas"]
+    corpo = f"""  <section class="blog-head">
+    <div class="wrap">
+      <p><a class="link" href="/revista/">← Todas as edições</a></p>
+      <p class="eyebrow">Revista</p>
+      <h1>Viva Vivasso <span class="hl-serif">#{num}</span></h1>
+      <p>Arraste ou clique nos cantos da página para folhear. No celular, deslize o dedo.</p>
+    </div>
+  </section>
+  <section class="blog-list">
+    <div class="wrap">
+      <div class="flip-area">
+        <div class="flip-palco" id="flipbook" data-edicao="{num}" data-paginas="{n}" data-w="{e['largura']}" data-h="{e['altura']}"></div>
+      </div>
+      <div class="flip-controles">
+        <button type="button" id="flip-prev" class="flip-btn" aria-label="Página anterior">←</button>
+        <span id="flip-pos" class="flip-pos"></span>
+        <button type="button" id="flip-next" class="flip-btn" aria-label="Próxima página">→</button>
+        <button type="button" id="flip-tela" class="flip-btn flip-btn-texto">Tela cheia</button>
+      </div>
+      <noscript><p>Ative o JavaScript para folhear a revista.</p></noscript>
+    </div>
+  </section>
+  <script src="/js/vendor/page-flip.browser.js"></script>
+  <script src="/js/revista.js?v={VERSAO}"></script>"""
+    return pagina(f"Viva Vivasso #{num}", f"Edição {int(num)} da revista Viva Vivasso. Folheie online.",
+                  corpo, f"/revista/edicao-{num}/", body_class="inner")
+
+
+def monta_blog_antigo():
+    """O endereco /blog/ virou /revista/."""
+    corpo = """  <section class="blog-head">
+    <div class="wrap">
+      <h1>Esta página <span class="hl-serif">mudou</span></h1>
+      <p>A revista agora fica em outro endereço. Se você não for levado automaticamente, use o botão abaixo.</p>
+      <p><a class="pill" href="/revista/">Ir para a revista</a></p>
+    </div>
+  </section>"""
+    extra = '<meta http-equiv="refresh" content="0; url=/revista/"><meta name="robots" content="noindex">'
+    return pagina("Revista", "Esta página mudou para Revista.", corpo, "/blog/", extra_head=extra, body_class="inner")
 
 
 # ---------- jogos ----------
@@ -800,8 +904,10 @@ def escreve(caminho, conteudo):
 
 def main():
     posts = carrega_posts()
+    eds = carrega_revista()
     escreve("/", monta_home(posts))
-    escreve("/blog/", monta_blog(posts))
+    escreve("/revista/", monta_revista(eds))
+    escreve("/blog/", monta_blog_antigo())
     escreve("/agenda/", monta_agenda(carrega_agenda()))
     escreve("/cupons/", monta_cupons(carrega_cupons()))
     escreve("/jogos/", monta_jogos())
@@ -810,7 +916,10 @@ def main():
     escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/agenda/", "/cupons/", "/jogos/", "/selos/", "/jogos/respira/", "/blog/"]
+    urls = ["/", "/agenda/", "/cupons/", "/jogos/", "/selos/", "/jogos/respira/", "/revista/"]
+    for e in eds:
+        escreve(f"/revista/edicao-{e['num']}/", monta_edicao(e))
+        urls.append(f"/revista/edicao-{e['num']}/")
     for p in posts:
         escreve(f"/blog/{p['slug']}/", monta_post(p))
         urls.append(f"/blog/{p['slug']}/")

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vivasso | viva sua marca viva</title>
-<meta name="description" content="Vivasso é uma agência de marketing de wellness. Revista semanal, dicas, passeios e cupons para viver bem a cidade.">
+<meta name="description" content="Vivasso é uma agência de marketing de wellness. Agenda, revista, jogos e cupons para viver bem a cidade.">
 <link rel="canonical" href="https://vivasso.com.br/">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Vivasso | viva sua marca viva">
-<meta property="og:description" content="Vivasso é uma agência de marketing de wellness. Revista semanal, dicas, passeios e cupons para viver bem a cidade.">
+<meta property="og:description" content="Vivasso é uma agência de marketing de wellness. Agenda, revista, jogos e cupons para viver bem a cidade.">
 <meta property="og:url" content="https://vivasso.com.br/">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="https://vivasso.com.br/assets/og-image.png">
@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/site.css?v=1793370885">
+<link rel="stylesheet" href="/css/site.css?v=1793372989">
 
 </head>
 <body class="">
@@ -26,12 +26,11 @@
     <img class="logo-on-dark" src="/assets/marca-branco.png" alt="Vivasso">
     <img class="logo-on-light" src="/assets/marca-preto.png" alt="">
   </a>
-  <nav class="nav-links" aria-label="Principal">
+  <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+  <nav class="nav-links" id="nav-links" aria-label="Principal">
     <a href="/agenda/">Agenda</a>
-    <a href="/cupons/">Cupons</a>
+    <a href="/revista/">Revista</a>
     <a href="/jogos/">Jogos</a>
-    <a href="/selos/">Selos</a>
-    <a href="/blog/">Revista</a>
     <a href="#projetos">Projetos</a>
     <a href="#sobre">Sobre</a>
     <a class="pill pill-sm" href="#contato">Fale com a gente</a>
@@ -50,17 +49,20 @@
       <h1>Viva bem<br>a sua <span class="hl">cidade</span>.</h1>
       <p class="lead">Bem-estar para o corpo, a mente e o dia a dia. Dicas, passeios, cupons e jogos para quem quer viver melhor em Fortaleza, sem padrão e sem pressão.</p>
       <div class="hero-cta">
-        <a class="pill" href="/blog/">Ler a revista <span>→</span></a>
+        <a class="pill" href="/revista/">Ler a revista <span>→</span></a>
         <a class="link" href="#explorar">Explorar por assunto</a>
       </div>
     </div>
 
-    <a class="hero-card" href="https://soulexperience.vivasso.com.br" target="_blank" rel="noopener">
-      <span class="tag">Evento Vivasso</span>
-      <strong>Soul Experience</strong>
-      <small>2ª edição, 28 de novembro, no Iguatemi Bosque</small>
-      <i class="arrow">→</i>
-    </a>
+    <div class="hero-destaque">
+      <p class="hero-destaque-titulo">Eventos em destaque</p>
+      <a class="hero-card" href="https://soulexperience.vivasso.com.br" target="_blank" rel="noopener">
+        <span class="tag">Evento Vivasso</span>
+        <strong>Soul Experience</strong>
+        <small>2ª edição, 28 de novembro, no Iguatemi Bosque</small>
+        <i class="arrow">→</i>
+      </a>
+    </div>
 
     <svg class="curve curve-bottom" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0,140 L0,60 C320,0 700,20 1000,70 C1220,105 1340,110 1440,90 L1440,140 Z" fill="var(--paper)"/>
@@ -73,101 +75,47 @@
       <p class="eyebrow">Explore</p>
       <h2 class="section-title">O que você quer <span class="hl-serif">hoje</span>?</h2>
       <div class="tiles">
-        <a class="tile cat-movimento" href="/blog/?categoria=movimento" style="background-image:url(/assets/categorias/movimento.svg)">
-          <b>Movimento</b><small>1 texto</small>
+        <a class="tile cat-movimento" href="/agenda/?categoria=movimento" style="background-image:url(/assets/categorias/movimento.svg)">
+          <b>Movimento</b><small>12 eventos</small>
         </a>
-        <a class="tile cat-mente" href="/blog/?categoria=mente" style="background-image:url(/assets/categorias/mente.svg)">
+        <a class="tile cat-mente" href="/agenda/" style="background-image:url(/assets/categorias/mente.svg)">
           <b>Mente e emoção</b><small>em breve</small>
         </a>
-        <a class="tile cat-comer-bem" href="/blog/?categoria=comer-bem" style="background-image:url(/assets/categorias/comer-bem.svg)">
-          <b>Comer bem</b><small>em breve</small>
+        <a class="tile cat-comer-bem" href="/agenda/?categoria=comer-bem" style="background-image:url(/assets/categorias/comer-bem.svg)">
+          <b>Comer bem</b><small>1 evento</small>
         </a>
-        <a class="tile cat-passeios" href="/blog/?categoria=passeios" style="background-image:url(/assets/categorias/passeios.svg)">
-          <b>Passeios</b><small>em breve</small>
+        <a class="tile cat-passeios" href="/agenda/?categoria=passeios" style="background-image:url(/assets/categorias/passeios.svg)">
+          <b>Passeios</b><small>1 evento</small>
         </a>
-        <a class="tile cat-encontros" href="/blog/?categoria=encontros" style="background-image:url(/assets/categorias/encontros.svg)">
+        <a class="tile cat-encontros" href="/agenda/" style="background-image:url(/assets/categorias/encontros.svg)">
           <b>Encontros</b><small>em breve</small>
         </a>
-        <a class="tile cat-cupons" href="/cupons/" style="background-image:url(/assets/categorias/cupons.svg)">
-          <b>Cupons</b><small>3 ofertas</small>
-        </a>
       </div>
+      <p class="explore-link"><a class="link" href="/agenda/">Ver a agenda completa →</a></p>
     </div>
   </section>
 
   <!-- REVISTA -->
-  <section class="guides" id="novidades">
+  <section class="guides" id="revista">
     <div class="wrap">
       <div class="guides-head">
         <div>
           <p class="eyebrow">Viva Vivasso</p>
-          <h2 class="section-title">A revista da <span class="hl-serif">semana</span></h2>
+          <h2 class="section-title">A nossa <span class="hl-serif">revista</span></h2>
         </div>
-        <p>Uma edição nova toda semana, com o que vale a pena viver na cidade. Um pedaço de cada matéria também vai para o nosso Instagram.</p>
+        <p>Uma revista sobre bem-estar e o que acontece na cidade. Escolha uma edição e folheie, como numa revista de verdade.</p>
       </div>
-      <div class="cards">
-        <a class="card g1 cat-movimento" href="/blog/comece-a-se-mexer-sem-academia/" style="background-image:url(/assets/categorias/movimento.svg)">
-          <span class="tag">Movimento · Viva Vivasso</span>
-          <h3>Comece a se mexer em Fortaleza sem academia</h3>
-          <i class="arrow">→</i>
-        </a>
-        <a class="card g2 cat-mente empty" href="/blog/?categoria=mente" style="background-image:url(/assets/categorias/mente.svg)">
-          <span class="tag">Mente e emoção</span>
-          <h3>Em breve por aqui</h3>
-          <i class="arrow">→</i>
-        </a>
-        <a class="card g3 cat-comer-bem empty" href="/blog/?categoria=comer-bem" style="background-image:url(/assets/categorias/comer-bem.svg)">
-          <span class="tag">Comer bem</span>
-          <h3>Em breve por aqui</h3>
-          <i class="arrow">→</i>
-        </a>
-        <a class="card g4 cat-passeios empty" href="/blog/?categoria=passeios" style="background-image:url(/assets/categorias/passeios.svg)">
-          <span class="tag">Passeios</span>
-          <h3>Em breve por aqui</h3>
-          <i class="arrow">→</i>
-        </a>
-        <a class="card g5 cat-encontros empty" href="/blog/?categoria=encontros" style="background-image:url(/assets/categorias/encontros.svg)">
-          <span class="tag">Encontros</span>
-          <h3>Em breve por aqui</h3>
-          <i class="arrow">→</i>
-        </a>
-        <a class="card g6 cat-cupons empty" href="/blog/?categoria=cupons" style="background-image:url(/assets/categorias/cupons.svg)">
-          <span class="tag">Cupons</span>
-          <h3>Em breve por aqui</h3>
-          <i class="arrow">→</i>
-        </a>
-      </div>
-      <div class="center"><a class="pill" href="/blog/">Ver todas as edições <span>→</span></a></div>
+      
+      <div class="center"><a class="pill" href="/revista/">Ver todas as edições <span>→</span></a></div>
     </div>
   </section>
 
-  <!-- EM BREVE -->
-  <section class="soon" id="em-breve">
+  <section class="cupons-destaque" id="cupons-destaque">
     <div class="wrap">
-      <p class="eyebrow">No site</p>
-      <h2 class="section-title">Um espaço para <span class="hl-serif">voltar</span> todo dia</h2>
-      <div class="soon-grid">
-        <a class="soon-item s-blue" href="/agenda/">
-          <span class="tag">Novo</span>
-          <h3>Agenda wellness</h3>
-          <p>Aulas, treinos, passeios e encontros da cidade, com filtro por bairro e por dia.</p>
-        </a>
-        <a class="soon-item s-yellow" href="/cupons/">
-          <span class="tag">Novo</span>
-          <h3>Cupons</h3>
-          <p>Descontos de lugares que fazem bem, direto de quem apoia a Vivasso.</p>
-        </a>
-        <a class="soon-item s-purple" href="/jogos/">
-          <span class="tag">Novo</span>
-          <h3>Jogos</h3>
-          <p>O Respira é uma viagem de jangada que anda com a sua respiração. Suba de nível e ganhe selos.</p>
-        </a>
-        <a class="soon-item s-pink" href="/selos/">
-          <span class="tag">Novo</span>
-          <h3>Selos</h3>
-          <p>Volte sempre e ganhe selos. Eles ficam guardados no seu aparelho, sem cadastro.</p>
-        </a>
-      </div>
+      <p class="eyebrow">Cupons em destaque</p>
+      <h2 class="section-title">Descontos que <span class="hl-serif">fazem bem</span></h2>
+      <div class="cp-minis"><a class="cp-mini" data-until="2026-11-15" href="/cupons/"><small>Santander</small><b>Inscrição na corrida RioMar Fortaleza II</b><span>25% de desconto na inscrição</span></a><a class="cp-mini" data-until="2026-11-28" href="/cupons/"><small>Vivasso</small><b>Ingresso do Soul Experience</b><span>10% de desconto no ingresso</span></a><a class="cp-mini" data-until="" href="/cupons/"><small>Levitare Pilates</small><b>Aula experimental de pilates</b><span>Aula experimental gratuita e avaliativa</span></a></div>
+      <p><a class="link" href="/cupons/">Ver todos os cupons →</a></p>
     </div>
   </section>
 
@@ -183,10 +131,10 @@
           <p>Encontros de bem-estar para viver com o corpo, a mente e a cidade.</p>
           <i class="arrow">→</i>
         </a>
-        <a class="proj p-viva" href="/blog/">
+        <a class="proj p-viva" href="/revista/">
           <span class="tag">Revista</span>
           <h3>Viva Vivasso</h3>
-          <p>Nossa revista semanal sobre bem-estar e o que acontece na cidade.</p>
+          <p>Nossa revista sobre bem-estar e o que acontece na cidade.</p>
           <i class="arrow">→</i>
         </a>
         <div class="proj p-creators">
@@ -235,7 +183,7 @@
       <a href="/cupons/">Cupons</a>
       <a href="/jogos/">Jogos</a>
       <a href="/selos/">Meus selos</a>
-      <a href="/blog/">Revista</a>
+      <a href="/revista/">Revista</a>
       <a href="/#projetos">Projetos</a>
       <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
@@ -265,7 +213,7 @@
     <button type="button" class="pill pill-sm pill-outline" data-cookie="essential">Só os essenciais</button>
   </div>
 </div>
-<script src="/js/selos.js?v=1793370885"></script>
-<script src="/js/site.js?v=1793370885"></script>
+<script src="/js/selos.js?v=1793372989"></script>
+<script src="/js/site.js?v=1793372989"></script>
 </body>
 </html>

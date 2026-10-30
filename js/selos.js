@@ -4,7 +4,7 @@
   var AREAS = ['agenda', 'cupons', 'jogos', 'revista'];
   var DEFS = [
     { id: 'cupom', nome: 'Cupom no bolso', como: 'Copie o código de um cupom.', cor: '#c98a0e', marca: '%' },
-    { id: 'leitor', nome: 'Leitor da semana', como: 'Abra uma matéria da revista.', cor: '#c9709b', marca: 'V' },
+    { id: 'leitor', nome: 'Leitor da semana', como: 'Folheie uma edição da revista.', cor: '#c9709b', marca: 'V' },
     { id: 'explorador', nome: 'Explorador', como: 'Visite Agenda, Cupons, Jogos e Revista.', cor: '#3f9a8f', marca: '4' },
     { id: 'primeira-viagem', nome: 'Primeira viagem', como: 'Chegue à ilha no jogo Respira.', cor: '#2c7a70', marca: 'R' },
     { id: 'jangadeiro', nome: 'Mestre do vento', como: 'Chegue ao nível 3 no jogo Respira.', cor: '#b04d82', marca: 'N3' },
@@ -114,8 +114,8 @@
     if (p.indexOf('/agenda/') === 0) s.areas.agenda = 1;
     if (p.indexOf('/cupons/') === 0) s.areas.cupons = 1;
     if (p.indexOf('/jogos/') === 0) s.areas.jogos = 1;
-    if (p.indexOf('/blog/') === 0) s.areas.revista = 1;
-    if (/^\/blog\/[^/]+\/?$/.test(p)) s.flags.leitor = true;
+    if (p.indexOf('/revista/') === 0) s.areas.revista = 1;
+    if (/^\/revista\/edicao-\d+\/?$/.test(p)) s.flags.leitor = true;
   });
 
   // pagina Meus selos

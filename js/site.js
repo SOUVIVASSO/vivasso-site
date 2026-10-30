@@ -33,8 +33,8 @@
     function frame(now) {
       var r = hero.getBoundingClientRect();
       if (r.bottom > 0 && r.top < window.innerHeight) {
-        if (!finePointer && !inside) {
-          // celular: a janela passeia sozinha pela tela
+        if (!inside) {
+          // sem o mouse por perto, as bolhas passeiam sozinhas, no celular e no computador
           var s = (now - start) / 1000;
           t.x = 0.5 + 0.32 * Math.sin(s * 0.7);
           t.y = 0.5 + 0.25 * Math.sin(s * 0.9 + 1);
@@ -160,6 +160,8 @@
     });
   });
   [bairro, quando, gratis].forEach(function (el) { el.addEventListener('change', aplica); });
+  var pc = new URLSearchParams(location.search).get('categoria');
+  if (pc) { var chip = document.querySelector('#chips .chip[data-filter="' + pc + '"]'); if (chip) chip.click(); }
   aplica();
 })();
 
@@ -205,4 +207,37 @@
     });
   });
   aplica();
+})();
+
+// menu do celular
+(function () {
+  var nav = document.getElementById('nav'), btn = document.getElementById('nav-toggle');
+  if (!nav || !btn) return;
+  function fecha() {
+    nav.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', 'Abrir menu');
+  }
+  btn.addEventListener('click', function () {
+    var abre = !nav.classList.contains('open');
+    nav.classList.toggle('open', abre);
+    btn.setAttribute('aria-expanded', String(abre));
+    btn.setAttribute('aria-label', abre ? 'Fechar menu' : 'Abrir menu');
+  });
+  nav.querySelectorAll('.nav-links a').forEach(function (a) { a.addEventListener('click', fecha); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fecha(); });
+  document.addEventListener('click', function (e) { if (!nav.contains(e.target)) fecha(); });
+  window.addEventListener('resize', function () { if (window.innerWidth > 860) fecha(); });
+})();
+
+// cupons em destaque: esconde os vencidos
+(function () {
+  var minis = document.querySelectorAll('.cp-mini');
+  if (!minis.length) return;
+  var d = new Date();
+  var h = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  var vis = 0;
+  minis.forEach(function (m) { var u = m.dataset.until; if (u && u < h) m.hidden = true; else vis++; });
+  var sec = document.getElementById('cupons-destaque');
+  if (sec && !vis) sec.hidden = true;
 })();
