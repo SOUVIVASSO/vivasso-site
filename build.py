@@ -543,10 +543,10 @@ JOGOS_CORPO = """  <section class="blog-head">
             <li>Viagens de 2, 5 ou 10 minutos</li>
             <li>Quatro respirações, liberadas por nível</li>
             <li>Cinco níveis e selos para quem volta</li>
-            <li>Dá para jogar de olhos fechados, guiado por som e vibração</li>
+            <li>Dá para jogar de olhos fechados, guiado por sons e vibração</li>
           </ul>
           <p><a class="pill" href="/jogos/respira/">Jogar agora <span aria-hidden="true">→</span></a></p>
-          <p class="jogo-nota">De 2 a 10 minutos. Funciona melhor no celular. Fones de ouvido ajudam.</p>
+          <p class="jogo-nota">De 2 a 10 minutos. Funciona melhor no celular. Fones de ouvido ajudam. <a class="link" href="/jogos/respira/#manual">Manual dos sons</a></p>
         </div>
       </article>
 
@@ -674,14 +674,29 @@ RESPIRA_CORPO = """  <section class="blog-head">
           <button id="rs-hold" class="rs-hold" type="button" hidden>Segure para soltar o ar</button>
           <div class="rs-sliders">
             <label class="rs-sl" id="rs-sensRow" for="rs-sens"><span>Sensibilidade</span><input id="rs-sens" type="range" min="0.5" max="3" step="0.1" value="1.2"></label>
-            <label class="rs-sl" for="rs-guia"><span>Guia</span><select id="rs-guia"><option value="ambos">Voz e sons</option><option value="sons">Só sons</option><option value="voz">Só voz</option></select></label>
             <label class="rs-sl" for="rs-vol"><span>Volume</span><input id="rs-vol" type="range" min="0" max="1" step="0.05" value="0.5"></label>
           </div>
           <p class="rs-help" id="rs-help"></p>
-          <p class="rs-help" id="rs-help2"></p>
+          <p class="rs-help">Para jogar de olhos fechados, use fones e um volume confortável. Os sons guiam cada etapa. <a href="#manual">Veja o manual dos sons</a>.</p>
         </div>
       </div>
       <div class="rs-progress" id="rs-progress"></div>
+      <details class="rs-manual" id="manual">
+        <summary>Manual dos sons</summary>
+        <p class="rs-manual-intro">Cada som tem um significado. Toque em Ouvir para conhecer. No iPhone, desligue o modo silencioso.</p>
+        <ul class="rs-sons">
+          <li><div><b>Três notas suaves subindo</b><p>Tudo pronto. A viagem vai começar.</p></div><button type="button" class="rs-ouvir" data-som="comecar">Ouvir</button></li>
+          <li><div><b>Um som que sobe devagar</b><p>Hora de inspirar. Ele dura o tempo da inspiração.</p></div><button type="button" class="rs-ouvir" data-som="inspirar">Ouvir</button></li>
+          <li><div><b>Um som firme e baixinho, sem mudar</b><p>Segure o ar.</p></div><button type="button" class="rs-ouvir" data-som="segurar">Ouvir</button></li>
+          <li><div><b>Um som que desce devagar</b><p>Solte o ar. Ele dura o tempo de soltar.</p></div><button type="button" class="rs-ouvir" data-som="soltar">Ouvir</button></li>
+          <li><div><b>Um sininho curto no começo de cada etapa</b><p>A etapa mudou. Agudo é para inspirar. Grave é para soltar.</p></div><button type="button" class="rs-ouvir" data-som="ding">Ouvir</button></li>
+          <li><div><b>Duas notas claras, como um sininho</b><p>Ciclo calmo concluído. Você respirou no ritmo.</p></div><button type="button" class="rs-ouvir" data-som="ciclo">Ouvir</button></li>
+          <li><div><b>Dois toquinhos graves, descendo</b><p>O ar saiu rápido ou forte demais. Na próxima, solte com mais calma.</p></div><button type="button" class="rs-ouvir" data-som="rapido">Ouvir</button></li>
+          <li><div><b>Um "mmm" grave e longo</b><p>O ar saiu fraco ou parou antes da hora. Na próxima, solte um pouco mais firme e sem parar.</p></div><button type="button" class="rs-ouvir" data-som="devagar">Ouvir</button></li>
+          <li><div><b>Quatro notas subindo e se abrindo</b><p>Você chegou à ilha.</p></div><button type="button" class="rs-ouvir" data-som="chegada">Ouvir</button></li>
+        </ul>
+        <p class="rs-manual-intro"><b>No modo Barriga:</b> as três notas suaves avisam para você se deitar e apoiar o celular. Depois de alguns segundos, um sininho avisa para ficar parado. Em seguida o som sobe: inspire fundo, enchendo a barriga, para o celular aprender a sua respiração. As três notas de novo avisam que a viagem começou. Nos celulares que permitem, a vibração acompanha os sons.</p>
+      </details>
       <p class="agenda-aviso">O Respira é um jogo de relaxamento e não substitui o cuidado de um profissional de saúde. Se você está passando por um momento difícil, procure ajuda. O CVV atende 24 horas pelo telefone 188.</p>
       <p><a class="link" href="/jogos/">Ver todos os jogos</a></p>
     </div>

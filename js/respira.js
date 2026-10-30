@@ -170,7 +170,7 @@
   let level = 0, agit = 0, speed = 0, dist = 0, t = 0;
   let exhaling = false, exhaleT = 0, quietT = 0, best = 0, calmT = 0, exhaleTotal = 0;
   let msgHold = 0, lastMsg = '';
-  let sess = null, stepI = 0, stepT = 0, outBand = 0, prepT = 0, arriveT = 0, smoothP = 0;
+  let sess = null, stepI = 0, stepT = 0, outBand = 0, outHigh = 0, outLow = 0, prepT = 0, arriveT = 0, smoothP = 0;
   const sel = { feel: 'anx', mins: 5, tech: 'long' };
 
   function resize() {
@@ -250,6 +250,7 @@
       conv.connect(wet); wet.connect(A.out); A.rev = conv;
 
       const nb = noiseBuf(c);
+      A.nb = nb;
       const rum = c.createBufferSource(); rum.buffer = nb; rum.loop = true;
       const rumF = c.createBiquadFilter(); rumF.type = 'lowpass'; rumF.frequency.value = 480;
       const rumG = c.createGain(); rumG.gain.value = 0.2;
@@ -291,46 +292,39 @@
   function arpeggio() { if (!A.ctx) return; [0, 2, 3, 5].forEach((n, k) => tone(PENTA[n], A.ctx.currentTime + k * 0.22, 2.8, 0.15)); }
   function cue(type) {
     if (!A.ctx) return;
-    const f = type === 'in' ? 349.23 : type === 'out' ? 261.63 : 440;
-    tone(f, A.ctx.currentTime, 0.9, 0.06);
+    const t0 = A.ctx.currentTime;
+    if (type === 'in') bell(659.25, t0, 0.08, 1.6);
+    else if (type === 'out') bell(392, t0, 0.08, 1.8);
+    else bell(523.25, t0, 0.04, 1.2);
   }
   function cueBuzz(type) { buzz(type === 'in' ? [40] : type === 'out' ? [70] : [25]); }
 
-  /* ---------- guia para jogar de olhos fechados: voz e sons ----------
-     O som sobe enquanto voce inspira, fica firme enquanto segura e desce enquanto solta.
-     Uma voz do proprio aparelho diz o nome de cada etapa. */
-  const G = { sons: true, voz: true, vozEscolhida: null };
-  try {
-    const salvo = localStorage.getItem('vivasso_respira_guia');
-    if (salvo === 'sons') { G.voz = false; } else if (salvo === 'voz') { G.sons = false; }
-  } catch (e) {}
-  const FALA = { in: 'Inspire', hold: 'Segure', out: 'Solte o ar', hold2: 'Fique sem ar' };
-  function escolheVoz() {
-    if (!('speechSynthesis' in window)) return;
-    const vozes = speechSynthesis.getVoices() || [];
-    G.vozEscolhida = vozes.find(v => /^pt[-_]BR/i.test(v.lang)) || vozes.find(v => /^pt/i.test(v.lang)) || null;
+  /* ---------- guia sonoro: so sons, sem voz ----------
+     Subindo = inspire. Firme = segure. Descendo = solte o ar.
+     Sininho de duas notas = ciclo calmo. Toquinhos graves = rapido ou forte demais.
+     Um "mmm" grave e longo = fraco demais ou parou antes da hora. */
+  function bell(f, t0, amp, dur) {
+    tone(f, t0, dur, amp, 'sine');
+    tone(f * 2.01, t0, dur * 0.5, amp * 0.25, 'sine');
   }
-  if ('speechSynthesis' in window) {
-    escolheVoz();
-    try { speechSynthesis.addEventListener('voiceschanged', escolheVoz); } catch (e) {}
-  }
-  function falar(texto) {
-    if (!G.voz || !A.on || !texto || !('speechSynthesis' in window)) return;
-    try {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(texto);
-      u.lang = 'pt-BR'; u.rate = 0.85; u.pitch = 0.95;
-      u.volume = clamp(0.4 + A.vol, 0, 1);
-      if (G.vozEscolhida) u.voice = G.vozEscolhida;
-      speechSynthesis.speak(u);
-    } catch (e) {}
-  }
-  function calaGuia() {
-    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {}
+  function sopro(sobe, t0, seg) {
+    const c = A.ctx;
+    if (!c || !A.nb) return;
+    const src = c.createBufferSource(); src.buffer = A.nb; src.loop = true;
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.1;
+    const g = c.createGain();
+    bp.frequency.setValueAtTime(sobe ? 420 : 950, t0);
+    bp.frequency.linearRampToValueAtTime(sobe ? 950 : 420, t0 + seg * 0.95);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(0.14, t0 + 0.5);
+    g.gain.setValueAtTime(0.14, t0 + Math.max(seg - 0.6, 0.6));
+    g.gain.linearRampToValueAtTime(0.0001, t0 + seg);
+    src.connect(bp); bp.connect(g); g.connect(A.out); g.connect(A.rev);
+    src.start(t0); src.stop(t0 + seg + 0.1);
   }
   function guide(type, seg) {
     const c = A.ctx;
-    if (!c || !A.live || !G.sons) return;
+    if (!c || !A.live) return;
     const t0 = c.currentTime + 0.05;
     const F = { in: [196, 330], out: [330, 196], hold: [294, 294], hold2: [196, 196] }[type] || [262, 262];
     const o = c.createOscillator(), g = c.createGain();
@@ -344,14 +338,58 @@
     g.gain.linearRampToValueAtTime(0.0001, t0 + seg);
     o.connect(g); g.connect(A.out); g.connect(A.rev);
     o.start(t0); o.stop(t0 + seg + 0.1);
+    if (type === 'in') sopro(true, t0, seg);
+    if (type === 'out') sopro(false, t0, seg);
+  }
+  function somComecar() {
+    const c = A.ctx; if (!c || !A.live) return;
+    const t0 = c.currentTime + 0.05;
+    bell(523.25, t0, 0.14, 1.8); bell(659.25, t0 + 0.22, 0.14, 1.8); bell(783.99, t0 + 0.44, 0.16, 2.6);
+  }
+  function somCiclo() {
+    const c = A.ctx; if (!c || !A.live) return;
+    const t0 = c.currentTime + 0.05;
+    bell(PENTA[2], t0, 0.15, 2.2); bell(PENTA[4], t0 + 0.18, 0.15, 2.8);
+  }
+  function somRapido() {
+    const c = A.ctx; if (!c || !A.live) return;
+    const t0 = c.currentTime + 0.05;
+    tone(330, t0, 0.22, 0.12, 'triangle'); tone(247, t0 + 0.2, 0.3, 0.12, 'triangle');
+  }
+  function somDevagar() {
+    const c = A.ctx; if (!c || !A.live) return;
+    const t0 = c.currentTime + 0.05;
+    tone(196, t0, 1.6, 0.1, 'sine'); tone(98, t0, 1.6, 0.06, 'sine');
   }
   function startStep() {
     if (!sess) return;
     const st = sess.tech.pat[stepI];
     cue(st[0]); cueBuzz(st[0]);
     guide(st[0], st[1]);
-    falar(FALA[st[0]]);
   }
+  const SONS = {
+    comecar: somComecar,
+    ding: () => cue('in'),
+    inspirar: () => guide('in', 4),
+    segurar: () => guide('hold', 3),
+    soltar: () => guide('out', 5),
+    ciclo: somCiclo,
+    rapido: somRapido,
+    devagar: somDevagar,
+    chegada: arpeggio
+  };
+  document.querySelectorAll('.rs-ouvir').forEach(b => {
+    b.addEventListener('click', () => {
+      const fn = SONS[b.dataset.som];
+      if (!fn) return;
+      initAudio();
+      const antes = A.live;
+      A.live = true; applyVol();
+      fn();
+      buzz(30);
+      setTimeout(() => { if (!running && !calibrating) { A.live = antes; applyVol(); } }, 5500);
+    });
+  });
 
   /* ---------- tela ligada e tela cheia (os dois sao opcionais) ---------- */
   async function keepAwake(on) {
@@ -464,7 +502,6 @@
       : mode === 'belly'
         ? 'Modo Barriga (em teste): deite-se, apoie o celular com a tela para cima sobre a barriga e respire pela barriga. O celular sente o sobe e desce e o jogo avisa pelo som e pela vibração, então dá para jogar de olhos fechados. Fique o mais parado que puder. Se não responder bem, ajuste a sensibilidade ou use o modo Toque.'
         : 'Modo Toque: segure o botão enquanto solta o ar e solte para inspirar. No computador, use a barra de espaço. O som guia cada etapa, então dá para jogar de olhos fechados.';
-    $('rs-help2').textContent = 'Para jogar de olhos fechados, use fones e volume confortável. Uma voz diz o que fazer e o som sobe quando é para inspirar, fica firme ao segurar e desce ao soltar o ar. No iPhone, desligue o modo silencioso.';
   }
 
   /* ---------- microfone e controle da viagem ---------- */
@@ -488,7 +525,6 @@
     if (actx) { actx.close().catch(() => {}); actx = null; }
     analyser = null;
     bellyOff();
-    calaGuia();
     keepAwake(false);
     setUi();
   }
@@ -501,6 +537,7 @@
     running = true; calibrating = false;
     stepI = 0; stepT = 0; outBand = 0; prepT = 3.2; smoothP = 0; arriveT = 0;
     setUi();
+    somComecar();
     say('Prepare-se… ' + sess.tech.name, 3.2);
   }
 
@@ -513,7 +550,6 @@
     $('rs-phaseSub').textContent = T.sub;
     show(null);
     keepAwake(true);
-    if (mode !== 'belly') falar('Prepare-se.');
     if (mode === 'mic') {
       calibrating = true; setUi();
       say('Pedindo acesso ao microfone…');
@@ -570,13 +606,6 @@
     $('rs-snd').setAttribute('aria-pressed', String(A.on));
     $('rs-snd').textContent = A.on ? 'Som: ligado' : 'Som: desligado';
     initAudio(); applyVol();
-  });
-  $('rs-guia').value = G.sons && G.voz ? 'ambos' : G.sons ? 'sons' : 'voz';
-  $('rs-guia').addEventListener('change', () => {
-    const v = $('rs-guia').value;
-    G.sons = v !== 'voz'; G.voz = v !== 'sons';
-    try { localStorage.setItem('vivasso_respira_guia', v); } catch (e) {}
-    if (G.voz) falar('Voz ligada.');
   });
   $('rs-vol').addEventListener('input', () => { A.vol = parseFloat($('rs-vol').value); applyVol(); });
 
@@ -653,12 +682,12 @@
       if (!BL.msgOk) {
         BL.msgOk = true; BL.stageT = 0;
         say('Deite-se e apoie o celular na barriga, com a tela para cima.');
-        falar('Deite-se e apoie o celular na barriga, com a tela para cima.');
+        somComecar();
       }
       if (!BL.still) {
         if (BL.stageT < BL.settle) return;
         BL.still = true; BL.stageT = 0;
-        say('Fique parado…'); falar('Fique parado.');
+        say('Fique parado…'); cue('in');
         return;
       }
       for (let i = 0; i < 3; i++) BL.baseSum[i] += BL.gFast[i];
@@ -667,7 +696,7 @@
         BL.base = BL.baseSum.map(x => x / BL.baseN);
         BL.stage = 1; BL.stageT = 0; BL.peak = 0;
         say('Agora inspire fundo, enchendo a barriga…');
-        falar('Agora inspire fundo, enchendo a barriga.');
+        guide('in', 4.6);
         buzz(40);
       }
     } else if (BL.stage === 1) {
@@ -681,7 +710,6 @@
         BL.gSlow = BL.gFast.slice();
         BL.s = 0; BL.sPrev = 0; BL.sd = 0;
         say('Pronto. Solte o ar e relaxe.', 2);
-        falar('Pronto. Solte o ar e relaxe.');
         begin();
       }
     }
@@ -742,7 +770,6 @@
     if (!sess || sess.done) return;
     sess.done = true; arriveT = 3.5;
     arpeggio(); buzz([80, 60, 80, 60, 140]);
-    falar('Você chegou à ilha. Bom trabalho.');
     say('Você chegou à ilha.', 4);
   }
 
@@ -759,16 +786,26 @@
     if (sess.t >= sess.total) { sess.closing = true; sess.closeT += dt; }
     const st = pat[stepI];
     stepT += dt;
-    if (st[0] === 'out' && level > 0.12 && level < 0.7) outBand += dt;
+    if (st[0] === 'out') {
+      if (level > 0.12 && level < 0.7) outBand += dt;
+      else if (level >= 0.7) outHigh += dt;
+      else outLow += dt;
+    }
     if (stepT >= st[1]) {
       if (st[0] === 'out') {
         if (outBand / st[1] >= 0.7) {
-          sess.cycles++; chime(sess.cycles);
+          sess.cycles++; somCiclo();
           say('Boa! ' + sess.cycles + (sess.cycles === 1 ? ' ciclo calmo.' : ' ciclos calmos.'), 2);
-        } else say('Quase. Solte o ar mais devagar, sem pausas.', 2.4);
+        } else if (outHigh >= outLow && outHigh > 0) {
+          somRapido();
+          say('Mais devagar. Solte o ar com calma e sem força.', 2.6);
+        } else {
+          somDevagar();
+          say(mode === 'touch' ? 'Segure o botão durante toda a etapa de soltar o ar.' : 'Solte o ar um pouco mais firme, sem parar.', 2.6);
+        }
       }
       stepI = (stepI + 1) % pat.length;
-      stepT = 0; outBand = 0;
+      stepT = 0; outBand = 0; outHigh = 0; outLow = 0;
       startStep();
       if (sess.closing && stepI === 0) arrive();
     }

@@ -556,3 +556,17 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
 
 .rs-sl select{flex:1;min-width:0;font-family:inherit;font-size:14px;padding:8px 12px;border-radius:12px;border:1px solid var(--rs-line);background:rgba(255,255,255,.08);color:var(--rs-ink)}
 .rs-sl select option{color:#1d1236}
+
+.rs-help a{color:var(--rs-accent);text-decoration:underline;text-underline-offset:3px}
+.rs-manual{margin-top:20px;background:#fff;border-radius:22px;padding:6px 26px;border:1px solid rgba(22,19,31,.07);box-shadow:0 12px 32px rgba(22,19,31,.05)}
+.rs-manual summary{cursor:pointer;font-size:22px;font-weight:600;padding:20px 0;list-style:none}
+.rs-manual summary::-webkit-details-marker{display:none}
+.rs-manual summary::after{content:"+";float:right;font-size:26px;line-height:1;color:var(--blue)}
+.rs-manual[open] summary::after{content:"\2212"}
+.rs-manual-intro{font-size:15px;color:#4a4458;margin-bottom:12px;line-height:1.6}
+.rs-sons{list-style:none;display:flex;flex-direction:column;gap:2px;margin:0 0 16px}
+.rs-sons li{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:1px solid rgba(22,19,31,.08)}
+.rs-sons b{font-size:16px;font-weight:600;display:block}
+.rs-sons p{font-size:14px;color:#4a4458;margin-top:2px;line-height:1.5}
+.rs-ouvir{flex:none;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:10px 18px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer}
+@media (max-width:560px){.rs-sons li{flex-direction:column;align-items:flex-start}}
