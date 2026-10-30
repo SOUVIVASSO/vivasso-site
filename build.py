@@ -251,6 +251,15 @@ def cartao_home(cat, posts_cat, indice):
         </a>"""
 
 
+def carrega_destaque():
+    """Destaque do topo da capa. Se o arquivo nao existir, usa a materia mais nova."""
+    arq = ROOT / "content" / "destaque.md"
+    if not arq.exists():
+        return None
+    meta, _ = front_matter(arq.read_text(encoding="utf-8"))
+    return meta if meta.get("title") and meta.get("link") else None
+
+
 def monta_home(posts):
     por_cat = {slug: [p for p in posts if p["category"] == slug] for slug, _ in CATEGORIAS}
 
@@ -276,7 +285,17 @@ def monta_home(posts):
         </a>"""]
 
     hero_card = ""
-    if posts:
+    destaque = carrega_destaque()
+    if destaque:
+        externo = destaque["link"].startswith("http")
+        alvo = ' target="_blank" rel="noopener"' if externo else ""
+        hero_card = f"""<a class="hero-card" href="{esc(destaque['link'])}"{alvo}>
+      <span class="tag">{esc(destaque.get('label', 'Destaque'))}</span>
+      <strong>{esc(destaque['title'])}</strong>
+      <small>{esc(destaque.get('subtitle', ''))}</small>
+      <i class="arrow">→</i>
+    </a>"""
+    elif posts:
         p = posts[0]
         rotulo = p.get("series") or CAT_NOME.get(p["category"], "Novo")
         hero_card = f"""<a class="hero-card" href="/blog/{p['slug']}/">

@@ -447,3 +447,5 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
   .ev h3{font-size:19px}
   .ev-side{grid-column:1 / -1;flex-direction:row;justify-content:space-between;align-items:center;min-width:0;flex-wrap:wrap;gap:12px}
 }
+
+.hero-card small{padding-right:44px;line-height:1.4}
