@@ -643,3 +643,6 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
 .wrap:fullscreen{background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:20px;overflow:auto}
 .cp-mini[hidden],.cupons-destaque[hidden]{display:none}
 @media (max-width:860px){.hero-destaque .hero-card{margin:0;transform:none;max-width:none}}
+
+/* desenhos dos assuntos: preenchem o bloco sem repetir */
+.tile,.card,.post-thumb,.post-cover{background-size:cover;background-position:center;background-repeat:no-repeat}
