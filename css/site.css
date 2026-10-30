@@ -649,3 +649,5 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
 
 /* titulo do topo: destaque suave na marca, sem caixa amarela */
 .hero h1 .hl{background:none;color:var(--yellow);padding:0;border-radius:0;transform:none;display:inline}
+
+.hero h1{font-size:clamp(44px,7.4vw,112px)}
