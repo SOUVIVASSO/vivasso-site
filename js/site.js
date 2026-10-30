@@ -21,14 +21,6 @@
     var inside = false;
     var start = performance.now();
 
-    hero.addEventListener('pointermove', function (e) {
-      if (e.pointerType === 'touch') return;
-      var r = hero.getBoundingClientRect();
-      t.x = (e.clientX - r.left) / r.width;
-      t.y = (e.clientY - r.top) / r.height;
-      inside = true;
-    });
-    hero.addEventListener('pointerleave', function () { inside = false; });
 
     function frame(now) {
       var r = hero.getBoundingClientRect();
