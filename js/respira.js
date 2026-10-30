@@ -164,7 +164,7 @@
 
   /* ---------- estado ---------- */
   let W = 0, H = 0, dpr = 1, horizon = 0, stars = [], clouds = [], motes = [];
-  let mode = 'mic', running = false, calibrating = false, calT = 0, floorAcc = 0, floorN = 0, floor = 0.002;
+  let mode = (window.matchMedia && matchMedia('(pointer: coarse)').matches) ? 'mic' : 'touch', running = false, calibrating = false, calT = 0, floorAcc = 0, floorN = 0, floor = 0.002;
   let stream = null, actx = null, analyser = null, buf = null, wl = null;
   let held = false;
   let level = 0, agit = 0, speed = 0, dist = 0, t = 0;
@@ -293,6 +293,7 @@
     const f = type === 'in' ? 349.23 : type === 'out' ? 261.63 : 440;
     tone(f, A.ctx.currentTime, 0.9, 0.06);
   }
+  function cueBuzz(type) { buzz(type === 'in' ? [40] : type === 'out' ? [70] : [25]); }
 
   /* ---------- tela ligada e tela cheia (os dois sao opcionais) ---------- */
   async function keepAwake(on) {
@@ -393,14 +394,18 @@
     const busy = running || calibrating;
     $('rs-mMic').setAttribute('aria-pressed', String(mode === 'mic'));
     $('rs-mTouch').setAttribute('aria-pressed', String(mode === 'touch'));
+    $('rs-mBelly').setAttribute('aria-pressed', String(mode === 'belly'));
     $('rs-seg').classList.toggle('off', busy);
-    $('rs-sensRow').hidden = mode !== 'mic';
+    $('rs-sensRow').hidden = mode === 'touch';
     $('rs-hold').hidden = !(mode === 'touch' && running);
     $('rs-stop').hidden = !busy;
     $('rs-hud').hidden = !busy;
+    $('rs-vib').hidden = !V.ok;
     $('rs-help').textContent = mode === 'mic'
       ? 'Modo Sopro: segure o celular a uns 20 cm do rosto e solte o ar pela boca, como quem apaga uma vela devagar. Use fones de ouvido, para o som do jogo não ser confundido com a sua respiração. O som do microfone é analisado ali mesmo e não é gravado nem enviado. Se o microfone não funcionar, o jogo passa para o modo Toque.'
-      : 'Modo Toque: segure o botão enquanto solta o ar e solte para inspirar. No computador, use a barra de espaço. O som guia cada etapa, então dá para jogar de olhos fechados.';
+      : mode === 'belly'
+        ? 'Modo Barriga (em teste): deite-se, apoie o celular com a tela para cima sobre a barriga e respire pela barriga. O celular sente o sobe e desce e o jogo avisa pelo som e pela vibração, então dá para jogar de olhos fechados. Fique o mais parado que puder. Se não responder bem, ajuste a sensibilidade ou use o modo Toque.'
+        : 'Modo Toque: segure o botão enquanto solta o ar e solte para inspirar. No computador, use a barra de espaço. O som guia cada etapa, então dá para jogar de olhos fechados.';
   }
 
   /* ---------- microfone e controle da viagem ---------- */
@@ -423,6 +428,7 @@
     if (stream) { stream.getTracks().forEach(tr => tr.stop()); stream = null; }
     if (actx) { actx.close().catch(() => {}); actx = null; }
     analyser = null;
+    bellyOff();
     keepAwake(false);
     setUi();
   }
@@ -460,6 +466,12 @@
       }
       calT = 0; floorAcc = 0; floorN = 0;
       say('Fique em silêncio por um instante…');
+    } else if (mode === 'belly') {
+      calibrating = true; setUi();
+      say('Pedindo acesso ao sensor de movimento…');
+      const r = await startBelly();
+      if (r !== 'ok') { calibrating = false; bellyFallback(r); return; }
+      say('Deite-se e apoie o celular na barriga, com a tela para cima. Fique parado…');
     } else {
       begin();
     }
@@ -484,6 +496,13 @@
   }
   $('rs-mMic').addEventListener('click', () => setMode('mic'));
   $('rs-mTouch').addEventListener('click', () => setMode('touch'));
+  $('rs-mBelly').addEventListener('click', () => setMode('belly'));
+  $('rs-vib').addEventListener('click', () => {
+    V.on = !V.on;
+    $('rs-vib').setAttribute('aria-pressed', String(V.on));
+    $('rs-vib').textContent = V.on ? 'Vibração: ligada' : 'Vibração: desligada';
+    if (V.on) buzz(30);
+  });
 
   $('rs-snd').addEventListener('click', () => {
     A.on = !A.on;
@@ -508,6 +527,101 @@
   });
   window.addEventListener('keyup', e => { if (e.code === 'Space') holdOff(); });
 
+  /* ---------- vibracao (so funciona em alguns aparelhos, como Android) ---------- */
+  const V = { ok: typeof navigator.vibrate === 'function', on: true, last: 0 };
+  function buzz(p) { if (V.ok && V.on) { try { navigator.vibrate(p); } catch (e) {} } }
+
+  /* ---------- barriga: o celular apoiado na barriga sente o sobe e desce ----------
+     Ao respirar pela barriga, o celular se inclina um pouco. Medimos essa mudanca de
+     inclinacao pelo sensor de gravidade e aprendemos, na calibracao, para que lado
+     ela vai quando voce inspira. Soltar o ar e a barriga descendo. */
+  const BL = {
+    on: false, got: 0, last: 0, init: false,
+    gFast: [0, 0, 0], gSlow: [0, 0, 0], base: [0, 0, 0], baseSum: [0, 0, 0], baseN: 0,
+    d: [0, 0, 1], amp: 0.2, stage: 0, stageT: 0, peak: 0, peakVec: [0, 0, 0],
+    s: 0, sPrev: 0, sd: 0, fail: null
+  };
+  function bellyHandler(e) {
+    const a = e.accelerationIncludingGravity;
+    if (!a || a.x == null || a.y == null || a.z == null) return;
+    const now = performance.now() / 1000;
+    const dt = BL.last ? clamp(now - BL.last, 0.004, 0.25) : 0.02;
+    BL.last = now; BL.got++;
+    const v = [a.x, a.y, a.z];
+    if (!BL.init) { BL.gFast = v.slice(); BL.gSlow = v.slice(); BL.init = true; }
+    const kf = 1 - Math.exp(-dt / 0.25);
+    const ks = 1 - Math.exp(-dt / (calibrating ? 1e9 : 8));
+    for (let i = 0; i < 3; i++) {
+      BL.gFast[i] += (v[i] - BL.gFast[i]) * kf;
+      BL.gSlow[i] += (v[i] - BL.gSlow[i]) * ks;
+    }
+  }
+  async function startBelly() {
+    try {
+      if (typeof DeviceMotionEvent === 'undefined') return 'sem-sensor';
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        const r = await DeviceMotionEvent.requestPermission();
+        if (r !== 'granted') return 'negado';
+      }
+    } catch (e) { return 'negado'; }
+    BL.got = 0; BL.last = 0; BL.init = false; BL.stage = 0; BL.stageT = 0; BL.fail = null;
+    BL.baseSum = [0, 0, 0]; BL.baseN = 0; BL.peak = 0; BL.s = 0; BL.sPrev = 0; BL.sd = 0;
+    if (!BL.on) { window.addEventListener('devicemotion', bellyHandler); BL.on = true; }
+    return 'ok';
+  }
+  function bellyOff() {
+    if (BL.on) { window.removeEventListener('devicemotion', bellyHandler); BL.on = false; }
+  }
+  const BELLY_MSG = {
+    'sem-sensor': 'Este aparelho não tem sensor de movimento. Troquei para o modo Toque.',
+    'negado': 'Sem permissão para o sensor de movimento. Troquei para o modo Toque.',
+    'sem-movimento': 'Não senti a sua barriga se mexer. Apoie o celular firme e tente de novo, ou use o modo Toque.'
+  };
+  function bellyCal(dt) {
+    BL.stageT += dt;
+    if (BL.stage === 0) {
+      if (BL.got === 0) { if (BL.stageT > 2.5) BL.fail = 'sem-sensor'; return; }
+      if (BL.baseN === 0) { say('Deite-se e apoie o celular na barriga, com a tela para cima. Fique parado…'); BL.stageT = 0; }
+      for (let i = 0; i < 3; i++) BL.baseSum[i] += BL.gFast[i];
+      BL.baseN++;
+      if (BL.stageT >= 2.8) {
+        BL.base = BL.baseSum.map(x => x / BL.baseN);
+        BL.stage = 1; BL.stageT = 0; BL.peak = 0;
+        say('Agora inspire fundo, enchendo a barriga…');
+        buzz(40);
+      }
+    } else if (BL.stage === 1) {
+      const dv = [BL.gFast[0] - BL.base[0], BL.gFast[1] - BL.base[1], BL.gFast[2] - BL.base[2]];
+      const mag = Math.hypot(dv[0], dv[1], dv[2]);
+      if (mag > BL.peak) { BL.peak = mag; BL.peakVec = dv.slice(); }
+      if (BL.stageT >= 4.6) {
+        if (BL.peak < 0.04) { BL.fail = 'sem-movimento'; return; }
+        BL.d = BL.peakVec.map(x => x / BL.peak);
+        BL.amp = BL.peak;
+        BL.gSlow = BL.gFast.slice();
+        BL.s = 0; BL.sPrev = 0; BL.sd = 0;
+        say('Pronto. Solte o ar e relaxe.', 2);
+        begin();
+      }
+    }
+  }
+  function bellyLevel(dt) {
+    const dv = [BL.gFast[0] - BL.gSlow[0], BL.gFast[1] - BL.gSlow[1], BL.gFast[2] - BL.gSlow[2]];
+    const sRaw = (dv[0] * BL.d[0] + dv[1] * BL.d[1] + dv[2] * BL.d[2]) / BL.amp;
+    BL.s += (sRaw - BL.s) * (1 - Math.exp(-dt / 0.2));
+    const sdot = (BL.s - BL.sPrev) / Math.max(dt, 0.001);
+    BL.sPrev = BL.s;
+    BL.sd += (sdot - BL.sd) * (1 - Math.exp(-dt / 0.5));
+    const sens = parseFloat($('rs-sens').value) || 1.2;
+    return clamp(-BL.sd * 2.0 * (sens / 1.2), 0, 1);
+  }
+  function bellyFallback(motivo) {
+    bellyOff();
+    mode = 'touch';
+    if (!running) begin();
+    say(BELLY_MSG[motivo] || 'Troquei para o modo Toque.', 5);
+  }
+
   /* ---------- sopro ---------- */
   function updateLevel(dt) {
     let raw = 0, rate = 8;
@@ -523,6 +637,12 @@
         const sens = parseFloat($('rs-sens').value) || 1;
         raw = clamp((rms - floor * 1.4 - 0.0015) / (0.03 / sens), 0, 1);
       }
+    } else if (mode === 'belly') {
+      if (calibrating) {
+        bellyCal(dt);
+        if (BL.fail) { const m = BL.fail; BL.fail = null; calibrating = false; bellyFallback(m); }
+      } else if (running) raw = bellyLevel(dt);
+      rate = 4;
     } else if (mode === 'touch') {
       raw = running && held ? 0.44 : 0;
       rate = 2.6;
@@ -540,7 +660,7 @@
   function arrive() {
     if (!sess || sess.done) return;
     sess.done = true; arriveT = 3.5;
-    arpeggio();
+    arpeggio(); buzz([80, 60, 80, 60, 140]);
     say('Você chegou à ilha.', 4);
   }
 
@@ -567,7 +687,7 @@
       }
       stepI = (stepI + 1) % pat.length;
       stepT = 0; outBand = 0;
-      cue(pat[stepI][0]);
+      cue(pat[stepI][0]); cueBuzz(pat[stepI][0]);
       if (sess.closing && stepI === 0) arrive();
     }
     if (sess.closing && sess.closeT > 12) arrive();
@@ -598,6 +718,8 @@
         if (quietT > (mode === 'touch' ? 0.05 : 0.4)) finishExhale();
       }
       updateSession(dt);
+      const agora = performance.now() / 1000;
+      if (exhaling && level > 0.12 && level < 0.7 && agora > V.last + 0.9) { V.last = agora; buzz(14); }
     } else if (exhaling) {
       exhaling = false;
     }
@@ -813,6 +935,9 @@
     update(dt);
     draw();
     requestAnimationFrame(frame);
+  }
+  if (/[?&]debug=1/.test(location.search)) {
+    window.__rs = { estado: () => ({ level, mode, running, calibrating, ciclos: sess ? sess.cycles : 0, etapa: BL.stage, d: BL.d, amp: BL.amp, s: BL.s, msg: lastMsg }) };
   }
   setUi();
   desenhaProg();

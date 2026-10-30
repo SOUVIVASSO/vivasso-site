@@ -105,7 +105,7 @@ def header(home):
   <nav class="nav-links" aria-label="Principal">
     <a href="/agenda/">Agenda</a>
     <a href="/cupons/">Cupons</a>
-    <a href="/pausa/">Pausa</a>
+    <a href="/jogos/">Jogos</a>
     <a href="/selos/">Selos</a>
     <a href="/blog/">Revista</a>
     <a href="{prefixo}#projetos">Projetos</a>
@@ -130,7 +130,7 @@ def footer(home):
       <h4>Navegue</h4>
       <a href="/agenda/">Agenda</a>
       <a href="/cupons/">Cupons</a>
-      <a href="/pausa/">Pausa</a>
+      <a href="/jogos/">Jogos</a>
       <a href="/selos/">Meus selos</a>
       <a href="/blog/">Revista</a>
       <a href="/#projetos">Projetos</a>
@@ -520,73 +520,80 @@ def monta_cupons(itens):
                   corpo, "/cupons/", body_class="inner")
 
 
-# ---------- pausa ----------
+# ---------- jogos ----------
 
-PAUSA_CORPO = """  <section class="blog-head">
+JOGOS_CORPO = """  <section class="blog-head">
     <div class="wrap">
-      <p class="eyebrow">Pausa</p>
-      <h1>Um respiro no <span class="hl-serif">meio do dia</span></h1>
-      <p>Três pausas rápidas para você usar agora. Não substituem o cuidado de um profissional de saúde.</p>
-      <p class="pausa-count" id="pausa-count" hidden></p>
+      <p class="eyebrow">Jogos</p>
+      <h1>Respire, navegue e <span class="hl-serif">volte</span></h1>
+      <p>Jogos curtos para desacelerar. Sem placar para vencer: o seu progresso fica salvo neste aparelho e rende selos.</p>
     </div>
   </section>
-
-  <section class="blog-list pausa">
-    <div class="wrap pausa-grid">
-
-      <a class="pausa-jogo" href="/jogos/respira/">
-        <span class="tag">Jogo</span>
-        <h2>Respira, a viagem</h2>
-        <p>Uma jangada no mar de Fortaleza que anda com a sua respiração. Suba de nível e salve o seu progresso.</p>
-        <span class="pausa-jogo-cta">Jogar agora <span aria-hidden="true">→</span></span>
-      </a>
-
-      <article class="pausa-card" id="respirar">
-        <span class="tag">1 minuto</span>
-        <h2>Respiração guiada</h2>
-        <p>Inspire pelo nariz, segure e solte devagar pela boca. Cinco rodadas.</p>
-        <div class="breath" id="breath" aria-live="polite">
-          <div class="breath-circle" id="breath-circle"></div>
-          <div class="breath-text" id="breath-text">Pronto?</div>
-        </div>
-        <div class="pausa-actions">
-          <button type="button" class="pill" id="breath-btn">Começar</button>
-        </div>
-      </article>
-
-      <article class="pausa-card" id="mover">
-        <span class="tag">2 minutos</span>
-        <h2>Pausa para mover</h2>
-        <p>Cinco movimentos leves para quem passou tempo demais sentado. Se algo doer, pare.</p>
-        <div class="step-box" id="move-box" aria-live="polite">
-          <div class="step-count" id="move-count"></div>
-          <div class="step-text" id="move-text">Pronto para se alongar?</div>
-        </div>
-        <div class="pausa-actions">
-          <button type="button" class="pill" id="move-btn">Começar</button>
-        </div>
-      </article>
-
-      <article class="pausa-card pausa-wide" id="quiz">
-        <span class="tag">Autoconhecimento</span>
-        <h2>De qual pausa você precisa hoje?</h2>
-        <p>Três perguntas rápidas. Sem certo ou errado.</p>
-        <div id="quiz-area"></div>
-      </article>
-
-    </div>
-  </section>
-
-  <section class="pausa-help">
+  <section class="blog-list">
     <div class="wrap">
-      <p>Se você está passando por um momento difícil, fale com alguém. O CVV atende 24 horas, de graça, pelo telefone <b>188</b> ou em <a href="https://www.cvv.org.br" target="_blank" rel="noopener">cvv.org.br</a>.</p>
+
+      <article class="jogo-destaque">
+        <img class="jogo-arte" src="/assets/jogos/respira.svg" alt="Uma jangada de vela triangular num mar ao entardecer, indo em direção a uma ilha com coqueiro" width="800" height="500">
+        <div class="jogo-texto">
+          <span class="tag">Jogo</span>
+          <h2>Respira, a viagem</h2>
+          <p class="jogo-lead">Uma jangada atravessa o mar de Fortaleza até uma ilha. Ela anda com a sua respiração.</p>
+          <p>Inspire, segure e solte o ar no ritmo certo. Quanto mais calma a respiração, mais longe a jangada vai. O céu e o mar mudam de cor conforme a hora do dia onde você está.</p>
+          <ul class="jogo-lista">
+            <li>Viagens de 2, 5 ou 10 minutos</li>
+            <li>Quatro respirações, liberadas por nível</li>
+            <li>Cinco níveis e selos para quem volta</li>
+            <li>Dá para jogar de olhos fechados, guiado por som e vibração</li>
+          </ul>
+          <p><a class="pill" href="/jogos/respira/">Jogar agora <span aria-hidden="true">→</span></a></p>
+          <p class="jogo-nota">De 2 a 10 minutos. Funciona melhor no celular. Fones de ouvido ajudam.</p>
+        </div>
+      </article>
+
+      <h2 class="jogo-titulo">Como funciona</h2>
+      <div class="jogo-passos">
+        <div class="jogo-passo"><b>1</b><h3>Conte como você está</h3><p>Duas perguntas rápidas: como você se sente e quanto tempo tem. O jogo escolhe uma respiração para o seu momento.</p></div>
+        <div class="jogo-passo"><b>2</b><h3>Respire no ritmo</h3><p>Um círculo mostra a hora de inspirar, segurar e soltar. Quando você solta o ar com calma, a jangada ganha velocidade.</p></div>
+        <div class="jogo-passo"><b>3</b><h3>Chegue à ilha</h3><p>Ao final, o jogo pergunta como você está e guarda o seu progresso. Cada viagem rende ciclos calmos para subir de nível.</p></div>
+      </div>
+
+      <h2 class="jogo-titulo">Três jeitos de jogar</h2>
+      <div class="jogo-modos">
+        <div class="jogo-modo"><h3>Toque</h3><p>Segure o botão enquanto solta o ar e solte para inspirar. No computador, use a barra de espaço.</p></div>
+        <div class="jogo-modo"><h3>Sopro</h3><p>O celular escuta o seu sopro, como quem apaga uma vela devagar. Use fones de ouvido. O som não é gravado.</p></div>
+        <div class="jogo-modo"><h3>Barriga <span class="jogo-beta">em teste</span></h3><p>Deite-se e apoie o celular sobre a barriga. Ele sente o sobe e desce da respiração e vibra para guiar você.</p></div>
+      </div>
+
+      <h2 class="jogo-titulo">Níveis</h2>
+      <ol class="jogo-niveis">
+        <li><b>Nível 1</b> Aprendiz de jangadeiro <span>Para começar</span></li>
+        <li><b>Nível 2</b> Jangadeiro <span>10 ciclos calmos. Libera a respiração quadrada e a viagem de 10 minutos</span></li>
+        <li><b>Nível 3</b> Mestre do vento <span>30 ciclos calmos. Libera a respiração 4-7-8 e um selo</span></li>
+        <li><b>Nível 4</b> Capitão da orla <span>60 ciclos calmos</span></li>
+        <li><b>Nível 5</b> Lenda do mar <span>100 ciclos calmos</span></li>
+      </ol>
+
+      <p class="agenda-aviso">Os jogos da Vivasso são de relaxamento e não substituem o cuidado de um profissional de saúde. Se você está passando por um momento difícil, procure ajuda. O CVV atende 24 horas pelo telefone 188.</p>
     </div>
   </section>"""
 
 
-def monta_pausa():
-    return pagina("Pausa", "Pausas rápidas de bem-estar: respiração guiada, movimento leve e um quiz de autoconhecimento.",
-                  PAUSA_CORPO, "/pausa/", body_class="inner")
+def monta_jogos():
+    return pagina("Jogos", "Jogos curtos de bem-estar da Vivasso. Respira: uma jangada no mar de Fortaleza que anda com a sua respiração.",
+                  JOGOS_CORPO, "/jogos/", body_class="inner")
+
+
+def monta_pausa_antiga():
+    """A pagina Pausa virou Jogos. Quem abrir o endereco antigo e levado para o novo."""
+    corpo = """  <section class="blog-head">
+    <div class="wrap">
+      <h1>Esta página <span class="hl-serif">mudou</span></h1>
+      <p>As pausas agora são jogos. Se você não for levado automaticamente, use o botão abaixo.</p>
+      <p><a class="pill" href="/jogos/">Ir para os jogos</a></p>
+    </div>
+  </section>"""
+    extra = '<meta http-equiv="refresh" content="0; url=/jogos/"><meta name="robots" content="noindex">'
+    return pagina("Pausa", "Esta página mudou para Jogos.", corpo, "/pausa/", extra_head=extra, body_class="inner")
 
 
 # ---------- selos ----------
@@ -595,7 +602,7 @@ SELOS_CORPO = """  <section class="blog-head">
     <div class="wrap">
       <p class="eyebrow">Meus selos</p>
       <h1>Volte, ganhe <span class="hl-serif">selos</span></h1>
-      <p>Cada pausa, cada visita e cada descoberta rende um selo. Eles ficam guardados só neste aparelho.</p>
+      <p>Cada viagem, cada visita e cada descoberta rende um selo. Eles ficam guardados só neste aparelho.</p>
       <p class="pausa-count" id="selos-resumo"></p>
     </div>
   </section>
@@ -608,7 +615,7 @@ SELOS_CORPO = """  <section class="blog-head">
 
 
 def monta_selos():
-    return pagina("Meus selos", "Selos da Vivasso para quem volta: pausas, visitas e descobertas.",
+    return pagina("Meus selos", "Selos da Vivasso para quem volta: jogos, visitas e descobertas.",
                   SELOS_CORPO, "/selos/", body_class="inner")
 
 
@@ -630,6 +637,7 @@ RESPIRA_CORPO = """  <section class="blog-head">
     <div class="wrap">
       <p class="eyebrow">Jogo</p>
       <h1>Respira, a <span class="hl-serif">viagem</span></h1>
+      <p><a class="link" href="/jogos/">← Todos os jogos</a></p>
       <p>Uma jangada, o mar de Fortaleza e a sua respiração. Respire no ritmo certo e chegue à ilha. Seu progresso fica salvo neste aparelho.</p>
     </div>
   </section>
@@ -656,8 +664,10 @@ RESPIRA_CORPO = """  <section class="blog-head">
             <div class="rs-seg" id="rs-seg" role="group" aria-label="Modo de jogo">
               <button id="rs-mMic" type="button" aria-pressed="true">Sopro</button>
               <button id="rs-mTouch" type="button" aria-pressed="false">Toque</button>
+              <button id="rs-mBelly" type="button" aria-pressed="false">Barriga</button>
             </div>
             <button id="rs-snd" class="rs-pill" type="button" aria-pressed="true">Som: ligado</button>
+            <button id="rs-vib" class="rs-pill" type="button" aria-pressed="true" hidden>Vibração: ligada</button>
             <button id="rs-fs" class="rs-pill" type="button" hidden>Tela cheia</button>
             <button id="rs-stop" class="rs-ghost" type="button" hidden>Encerrar</button>
           </div>
@@ -671,7 +681,7 @@ RESPIRA_CORPO = """  <section class="blog-head">
       </div>
       <div class="rs-progress" id="rs-progress"></div>
       <p class="agenda-aviso">O Respira é um jogo de relaxamento e não substitui o cuidado de um profissional de saúde. Se você está passando por um momento difícil, procure ajuda. O CVV atende 24 horas pelo telefone 188.</p>
-      <p><a class="link" href="/pausa/">Ver outras pausas</a></p>
+      <p><a class="link" href="/jogos/">Ver todos os jogos</a></p>
     </div>
   </section>
   <script src="/js/respira.js?v={VERSAO}"></script>"""
@@ -777,12 +787,13 @@ def main():
     escreve("/blog/", monta_blog(posts))
     escreve("/agenda/", monta_agenda(carrega_agenda()))
     escreve("/cupons/", monta_cupons(carrega_cupons()))
-    escreve("/pausa/", monta_pausa())
+    escreve("/jogos/", monta_jogos())
+    escreve("/pausa/", monta_pausa_antiga())
     escreve("/selos/", monta_selos())
     escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/agenda/", "/cupons/", "/pausa/", "/selos/", "/jogos/respira/", "/blog/"]
+    urls = ["/", "/agenda/", "/cupons/", "/jogos/", "/selos/", "/jogos/respira/", "/blog/"]
     for p in posts:
         escreve(f"/blog/{p['slug']}/", monta_post(p))
         urls.append(f"/blog/{p['slug']}/")

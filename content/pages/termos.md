@@ -11,7 +11,7 @@ Os textos, guias e dicas do site têm caráter informativo. Fazemos o possível 
 
 ## Saúde e bem-estar
 
-As pausas, os exercícios de respiração e de movimento e o quiz do site são só para inspirar. Eles não substituem consulta, diagnóstico ou tratamento com um profissional de saúde. Se algo doer, pare. Se você estiver passando por um momento difícil, procure ajuda. O CVV atende 24 horas pelo telefone 188.
+Os jogos e os exercícios de respiração do site são só para relaxar e inspirar. Eles não substituem consulta, diagnóstico ou tratamento com um profissional de saúde. Se algo doer, pare. Se você estiver passando por um momento difícil, procure ajuda. O CVV atende 24 horas pelo telefone 188.
 
 ## Cupons e parcerias
 

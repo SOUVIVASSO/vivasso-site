@@ -25,7 +25,7 @@ Horários e regras dos lugares podem mudar. Confira sempre antes de sair de casa
 
 ## Dois minutos agora
 
-Hoje não dá para sair? Tudo bem. Faça a [pausa para mover](/pausa/) aqui no site. São cinco movimentos leves, no seu ritmo. Se estiver agitado, comece pela [respiração guiada](/pausa/).
+Hoje não dá para sair? Tudo bem. Jogue o [Respira](/jogos/respira/) aqui no site: uma viagem de jangada que anda com a sua respiração. Leva poucos minutos e ajuda a desacelerar.
 
 ## Escute o corpo
 
@@ -33,6 +33,6 @@ Se algo doer, pare. Se tiver dúvida, converse com um profissional de saúde ant
 
 ## O desafio da semana
 
-Mexa o corpo por quinze minutos, três vezes nesta semana. Pode ser caminhada, alongamento ou dança na sala. Faça a sua primeira pausa no site e ganhe o seu primeiro [selo](/selos/).
+Mexa o corpo por quinze minutos, três vezes nesta semana. Pode ser caminhada, alongamento ou dança na sala. Chegue à ilha no Respira e ganhe o seu primeiro [selo](/selos/).
 
 *Esta edição reúne dicas gerais de bem-estar e não substitui a orientação de um profissional de saúde.*

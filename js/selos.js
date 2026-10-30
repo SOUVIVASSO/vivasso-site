@@ -1,13 +1,11 @@
 // Selos da Vivasso: tudo fica guardado so neste aparelho (localStorage).
 (function () {
   var KEY = 'vivasso_selos';
-  var AREAS = ['agenda', 'cupons', 'pausa', 'revista'];
+  var AREAS = ['agenda', 'cupons', 'jogos', 'revista'];
   var DEFS = [
-    { id: 'primeira-pausa', nome: 'Primeira pausa', como: 'Faça uma pausa guiada na página Pausa.', cor: '#1079aa', marca: '1' },
-    { id: 'curioso', nome: 'Curioso', como: 'Termine o quiz de autoconhecimento.', cor: '#8e74c8', marca: '?' },
     { id: 'cupom', nome: 'Cupom no bolso', como: 'Copie o código de um cupom.', cor: '#c98a0e', marca: '%' },
     { id: 'leitor', nome: 'Leitor da semana', como: 'Abra uma matéria da revista.', cor: '#c9709b', marca: 'V' },
-    { id: 'explorador', nome: 'Explorador', como: 'Visite Agenda, Cupons, Pausa e Revista.', cor: '#3f9a8f', marca: '4' },
+    { id: 'explorador', nome: 'Explorador', como: 'Visite Agenda, Cupons, Jogos e Revista.', cor: '#3f9a8f', marca: '4' },
     { id: 'primeira-viagem', nome: 'Primeira viagem', como: 'Chegue à ilha no jogo Respira.', cor: '#2c7a70', marca: 'R' },
     { id: 'jangadeiro', nome: 'Mestre do vento', como: 'Chegue ao nível 3 no jogo Respira.', cor: '#b04d82', marca: 'N3' },
     { id: 'dias-3', nome: '3 dias seguidos', como: 'Volte ao site 3 dias seguidos.', cor: '#1079aa', marca: '3' },
@@ -68,8 +66,6 @@
     var seq = sequenciaAtual(s.dias);
     if (seq > s.melhor) s.melhor = seq;
     var cond = {
-      'primeira-pausa': s.pausas >= 1,
-      'curioso': !!s.flags.quiz,
       'cupom': !!s.flags.cupom,
       'leitor': !!s.flags.leitor,
       'explorador': AREAS.every(function (a) { return s.areas[a]; }),
@@ -117,7 +113,7 @@
     var p = location.pathname;
     if (p.indexOf('/agenda/') === 0) s.areas.agenda = 1;
     if (p.indexOf('/cupons/') === 0) s.areas.cupons = 1;
-    if (p.indexOf('/pausa/') === 0) s.areas.pausa = 1;
+    if (p.indexOf('/jogos/') === 0) s.areas.jogos = 1;
     if (p.indexOf('/blog/') === 0) s.areas.revista = 1;
     if (/^\/blog\/[^/]+\/?$/.test(p)) s.flags.leitor = true;
   });

@@ -10,7 +10,7 @@ Cookies são pequenos arquivos que o site salva no seu navegador. Eles ajudam o 
 - **Essenciais:** guardam a sua escolha sobre cookies e garantem o funcionamento básico do site. Não podem ser desativados.
 - **Estatísticas:** nos ajudam a entender, de forma agregada, quais páginas são mais visitadas. Só são ativados se você aceitar.
 
-- **Armazenamento local:** guarda no seu aparelho os selos, a sequência de visitas e o contador de pausas. Esses dados não saem do seu aparelho nem são enviados para a Vivasso.
+- **Armazenamento local:** guarda no seu aparelho os selos, a sequência de visitas e o progresso dos jogos. Esses dados não saem do seu aparelho nem são enviados para a Vivasso.
 
 ## Como controlar
 

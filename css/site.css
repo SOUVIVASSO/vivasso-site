@@ -520,3 +520,36 @@ body.inner .pill-sm{background:var(--ink);color:#fff}
 .pausa-jogo .tag{background:var(--yellow);color:var(--ink)}
 .pausa-jogo-cta{align-self:flex-start;background:var(--yellow);color:var(--ink);font-weight:700;border-radius:999px;padding:12px 22px}
 @media (max-width:760px){.rs-numeros{grid-template-columns:1fr 1fr}.rs-stage{min-height:520px}.rs-stats dd{font-size:17px}}
+
+/* JOGOS (hub) */
+.jogo-destaque{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:#1d1236;color:#fff4e8;border-radius:28px;overflow:hidden;margin-bottom:56px}
+.jogo-arte{width:100%;height:100%;min-height:340px;object-fit:cover;display:block}
+.jogo-texto{padding:40px 38px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.jogo-texto h2{font-size:clamp(28px,3.4vw,40px);font-weight:600;letter-spacing:-.015em;line-height:1.1}
+.jogo-lead{font-size:19px;line-height:1.45;color:#fff4e8}
+.jogo-texto p{color:#e0c3b4}
+.jogo-texto .tag{background:var(--yellow);color:var(--ink)}
+.jogo-lista{list-style:none;display:flex;flex-direction:column;gap:8px;color:#fff4e8}
+.jogo-lista li{padding-left:26px;position:relative;font-size:15px}
+.jogo-lista li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;background:var(--yellow)}
+.jogo-texto .pill{background:var(--yellow);color:var(--ink)}
+.jogo-nota{font-size:13px}
+.jogo-titulo{font-size:26px;font-weight:600;letter-spacing:-.01em;margin:0 0 18px}
+.jogo-passos,.jogo-modos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:56px}
+.jogo-passo,.jogo-modo{background:#fff;border-radius:22px;padding:26px;border:1px solid rgba(22,19,31,.07);box-shadow:0 12px 32px rgba(22,19,31,.05);display:flex;flex-direction:column;gap:8px}
+.jogo-passo b{width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:18px}
+.jogo-passo h3,.jogo-modo h3{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.jogo-passo p,.jogo-modo p{font-size:15px;color:#4a4458;line-height:1.55}
+.jogo-beta{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--yellow);color:var(--ink);padding:3px 10px;border-radius:999px;vertical-align:middle;margin-left:6px}
+.jogo-niveis{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:48px}
+.jogo-niveis li{background:#fff;border-radius:18px;padding:18px 22px;border:1px solid rgba(22,19,31,.07);display:grid;grid-template-columns:90px 1fr;gap:4px 18px;align-items:baseline;font-size:17px;font-weight:600}
+.jogo-niveis li b{color:var(--blue);font-size:14px;text-transform:uppercase;letter-spacing:.08em}
+.jogo-niveis li span{grid-column:2;font-size:14px;font-weight:400;color:#4a4458}
+@media (max-width:860px){
+  .jogo-destaque{grid-template-columns:1fr}
+  .jogo-arte{min-height:220px;max-height:280px}
+  .jogo-texto{padding:28px 24px}
+  .jogo-passos,.jogo-modos{grid-template-columns:1fr}
+  .jogo-niveis li{grid-template-columns:1fr}
+  .jogo-niveis li span{grid-column:1}
+}
