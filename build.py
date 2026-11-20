@@ -192,7 +192,8 @@ def pagina(titulo, descricao, corpo, caminho, home=False, extra_head="", body_cl
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js');
+try{{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&!location.hash&&'scrollRestoration' in history){{history.scrollRestoration='manual';addEventListener('load',function(){{scrollTo({{top:0,behavior:'instant'}})}});scrollTo({{top:0,behavior:'instant'}});}}}}catch(e){{}}</script>
 <link rel="stylesheet" href="/css/site.css?v={VERSAO}">
 {extra_head}
 </head>
