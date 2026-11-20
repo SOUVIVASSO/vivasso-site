@@ -274,3 +274,50 @@
   }, { threshold: 0.2 });
   alvos.forEach(function (a) { io.observe(a); });
 })();
+
+// painel do Soul: a foto troca conforme a edicao aparece
+(function () {
+  var pin = document.querySelector('.soul-pin');
+  if (!pin || !('IntersectionObserver' in window)) return;
+  var eds = pin.querySelectorAll('.soul-ed');
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) {
+        pin.setAttribute('data-ed', e.target.getAttribute('data-ed'));
+        eds.forEach(function (x) { x.removeAttribute('data-ativa'); });
+        e.target.setAttribute('data-ativa', '1');
+      }
+    });
+  }, { rootMargin: '-40% 0px -40% 0px' });
+  eds.forEach(function (x) { io.observe(x); });
+  if (eds[0]) eds[0].setAttribute('data-ativa', '1');
+})();
+
+// letrao do Sobre anda devagar com a rolagem
+(function () {
+  var el = document.querySelector('[data-letrao]');
+  if (!el || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  var sec = el.closest('.about'), pend = false;
+  function atualiza() {
+    pend = false;
+    var r = sec.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    el.style.setProperty('--lx', (-(innerHeight - r.top) * 0.35) + 'px');
+  }
+  addEventListener('scroll', function () { if (!pend) { pend = true; requestAnimationFrame(atualiza); } }, { passive: true });
+  atualiza();
+})();
+
+// jingle da Vivasso: so toca quando a pessoa clica
+(function () {
+  var b = document.getElementById('jingle'), a = document.getElementById('jingle-audio');
+  if (!b || !a) return;
+  var txt = b.querySelector('.jingle-texto');
+  function para() { b.setAttribute('aria-pressed', 'false'); txt.textContent = 'Ouça o jingle'; }
+  b.addEventListener('click', function () {
+    if (a.paused) {
+      a.play().then(function () { b.setAttribute('aria-pressed', 'true'); txt.textContent = 'Tocando... clique para parar'; }).catch(para);
+    } else { a.pause(); para(); }
+  });
+  a.addEventListener('ended', function () { a.currentTime = 0; para(); });
+})();

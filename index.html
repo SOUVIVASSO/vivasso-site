@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="stylesheet" href="/css/site.css?v=1795177063">
+<link rel="stylesheet" href="/css/site.css?v=1795179529">
 
 </head>
 <body class="">
@@ -32,6 +32,7 @@
     <a href="#servicos">Serviços</a>
     <a href="#soul">Soul Experience</a>
     <a href="/revista/">Revista</a>
+    <a href="/parceiros/">Parceiros</a>
     <a href="#sobre">Sobre</a>
     <a class="pill pill-sm" href="#contato">Fale com a gente</a>
   </nav>
@@ -39,6 +40,7 @@
 <main id="top">
   <!-- HERO -->
   <section class="hero" id="hero">
+    
     <div class="blob b1" data-depth="30"></div>
     <div class="blob b2" data-depth="-20"></div>
     <div class="blob b3" data-depth="70"></div>
@@ -51,6 +53,11 @@
       <div class="hero-cta">
         <a class="pill" href="https://soulexperience.vivasso.com.br" target="_blank" rel="noopener">Conhecer o Soul Experience <span>→</span></a>
         <a class="link" href="#servicos">O que fazemos</a>
+        <button class="jingle" id="jingle" type="button" aria-pressed="false" aria-label="Ouvir o jingle da Vivasso">
+          <span class="jingle-icone" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="jingle-texto">Ouça o jingle</span>
+        </button>
+        <audio id="jingle-audio" src="/assets/audio/jingle-viva-sua-marca-viva.mp3" preload="none"></audio>
       </div>
     </div>
 
@@ -85,25 +92,25 @@
       <p class="eyebrow rv">O que fazemos</p>
       <h2 class="section-title rv">Projetos que <span class="hl-serif">movimentam</span> o bem-estar</h2>
       <div class="serv-grid">
-        <a class="serv s-azul rv" href="https://soulexperience.vivasso.com.br" target="_blank" rel="noopener">
+        <a class="serv s-azul rv" style="--foto:url(/assets/soul/foto-5.webp);--cor:16,121,170" href="https://soulexperience.vivasso.com.br" target="_blank" rel="noopener">
           <span class="serv-n">01</span>
           <h3>Eventos</h3>
           <p>Criamos e produzimos eventos de bem-estar. O Soul Experience reúne movimento, experiências sensoriais e marcas parceiras em Fortaleza.</p>
           <span class="serv-mais">Conhecer o Soul Experience →</span>
         </a>
-        <a class="serv s-roxo rv" href="https://soulexperience.vivasso.com.br/patrocinio/" target="_blank" rel="noopener">
+        <a class="serv s-roxo rv" style="--foto:url(/assets/soul/foto-3.webp);--cor:111,85,176" href="https://soulexperience.vivasso.com.br/patrocinio/" target="_blank" rel="noopener">
           <span class="serv-n">02</span>
           <h3>Captação de patrocínio</h3>
           <p>Levamos marcas para dentro das experiências. Montamos propostas de patrocínio com formato, alcance e presença no evento.</p>
           <span class="serv-mais">Ver uma proposta →</span>
         </a>
-        <a class="serv s-rosa rv" href="mailto:contato@vivasso.com.br?subject=Agenciamento%20de%20influenciadores">
+        <a class="serv s-rosa rv" style="--foto:url(/assets/soul/foto-6.webp);--cor:176,77,130" href="mailto:contato@vivasso.com.br?subject=Agenciamento%20de%20influenciadores">
           <span class="serv-n">03</span>
           <h3>Agenciamento de influenciadores</h3>
           <p>Conectamos marcas e eventos a criadores de conteúdo do universo wellness em Fortaleza.</p>
           <span class="serv-mais">Falar sobre isso →</span>
         </a>
-        <a class="serv s-amarelo rv" href="/revista/">
+        <a class="serv s-amarelo rv" style="--foto:url(/assets/revista/013/capa.webp);--cor:253,183,42" href="/revista/">
           <span class="serv-n">04</span>
           <h3>Revista e divulgação</h3>
           <p>A Viva Vivasso mostra os melhores eventos wellness da cidade. Também criamos uma edição dedicada ao seu evento.</p>
@@ -126,22 +133,64 @@
         <div class="rv"><b data-contar="80" data-sufixo=" mil">80 mil</b><span>pessoas alcançadas na 1ª edição</span></div>
         <div class="rv"><b data-contar="495" data-sufixo=" mil">495 mil</b><span>seguidores somados dos criadores convidados da 2ª edição</span></div>
       </div>
-      <div class="soul-edicoes">
-        <div class="soul-ed rv">
-          <small>1ª edição · 21 de agosto de 2026</small>
-          <h3>Pérola Tropical</h3>
-          <p>Uma noite à beira-mar, no Sunrise Beach Club, em Fortaleza, com moda praia boho chic.</p>
+      <div class="soul-pin" data-ed="1">
+        <div class="soul-visual" aria-hidden="true">
+          <img class="sv sv-1" src="/assets/soul/foto-4.webp" alt="" loading="lazy">
+          <img class="sv sv-2" src="/assets/soul/circuito.webp" alt="" loading="lazy">
+          <span class="sv-rotulo sv-r1">Pérola Tropical</span>
+          <span class="sv-rotulo sv-r2">Circuito das Estações</span>
         </div>
-        <div class="soul-ed rv">
-          <small>2ª edição · 28 de novembro de 2026</small>
-          <h3>Circuito das Estações</h3>
-          <p>Um circuito de estações de atividade física, no Iguatemi Bosque, em Fortaleza, com apoio da LoveNuts.</p>
+        <div class="soul-passos">
+          <div class="soul-ed" data-ed="1">
+            <small>1ª edição · 21 de agosto de 2026</small>
+            <h3>Pérola Tropical</h3>
+            <p>Uma noite à beira-mar, no Sunrise Beach Club, em Fortaleza, com moda praia boho chic. Reuniu 100 convidados e alcançou mais de 80 mil pessoas.</p>
+          </div>
+          <div class="soul-ed" data-ed="2">
+            <small>2ª edição · 28 de novembro de 2026</small>
+            <h3>Circuito das Estações</h3>
+            <p>Um circuito de estações de atividade física, no Iguatemi Bosque, em Fortaleza, com apoio da LoveNuts. Cada estação, um momento.</p>
+          </div>
         </div>
       </div>
       <div class="soul-acoes rv">
         <a class="pill pill-amarelo" href="https://soulexperience.vivasso.com.br" target="_blank" rel="noopener">Ver o evento <span>→</span></a>
-        <a class="link light" href="https://soulexperience.vivasso.com.br/patrocinio/" target="_blank" rel="noopener">Quero patrocinar</a>
+        <a class="link light" href="/parceiros/">Quero patrocinar</a>
       </div>
+    </div>
+    <div class="mural"><div class="mural-linha esq"><div class="mural-trilho"><img src="/assets/soul/foto-1.webp" alt="Convidada na primeira edição do Soul Experience" loading="lazy"><img src="/assets/soul/foto-3.webp" alt="Kit dos participantes da Pérola Tropical" loading="lazy"><img src="/assets/soul/foto-5.webp" alt="Palestra no Soul Experience" loading="lazy"><img src="/assets/soul/foto-6.webp" alt="Convidada diante do backdrop do evento" loading="lazy"><img src="/assets/soul/foto-4.webp" alt="Convite da Pérola Tropical" loading="lazy"><img src="/assets/soul/foto-8.webp" alt="Convidada na noite da Pérola Tropical" loading="lazy"><img src="/assets/soul/foto-2.webp" alt="Cena do Soul Experience" loading="lazy"><img src="/assets/soul/foto-1.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-3.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-5.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-6.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-4.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-8.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-2.webp" alt="" aria-hidden="true" loading="lazy"></div></div><div class="mural-linha dir"><div class="mural-trilho"><img src="/assets/soul/foto-2.webp" alt="Cena do Soul Experience" loading="lazy"><img src="/assets/soul/foto-8.webp" alt="Convidada na noite da Pérola Tropical" loading="lazy"><img src="/assets/soul/foto-4.webp" alt="Convite da Pérola Tropical" loading="lazy"><img src="/assets/soul/foto-6.webp" alt="Convidada diante do backdrop do evento" loading="lazy"><img src="/assets/soul/foto-5.webp" alt="Palestra no Soul Experience" loading="lazy"><img src="/assets/soul/foto-3.webp" alt="Kit dos participantes da Pérola Tropical" loading="lazy"><img src="/assets/soul/foto-1.webp" alt="Convidada na primeira edição do Soul Experience" loading="lazy"><img src="/assets/soul/foto-2.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-8.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-4.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-6.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-5.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-3.webp" alt="" aria-hidden="true" loading="lazy"><img src="/assets/soul/foto-1.webp" alt="" aria-hidden="true" loading="lazy"></div></div></div>
+  </section>
+
+  <!-- MARCAS -->
+  <section class="marcas" id="marcas">
+    <div class="wrap">
+      <p class="eyebrow eyebrow-claro rv">Quem já esteve com a gente</p>
+      <h2 class="section-title claro rv">Marcas que já passaram pelo <span class="hl-amarelo">Soul</span></h2>
+    </div>
+    <div class="marcas-linha esq"><div class="marcas-trilho"><span><img src="/assets/marcas/aquaclara.webp" alt="Aquaclara" loading="lazy"></span><span><img src="/assets/marcas/peso-carnes.webp" alt="Pesō Carnes Especiais" loading="lazy"></span><span><img src="/assets/marcas/ts-health.webp" alt="TS Health Center" loading="lazy"></span><span><img src="/assets/marcas/artcenic.webp" alt="Artcenic Eventos" loading="lazy"></span><span><img src="/assets/marcas/doterra.webp" alt="doTERRA" loading="lazy"></span><span><img src="/assets/marcas/subli-midia.webp" alt="Subli Mídia" loading="lazy"></span><span><img src="/assets/marcas/hits-producoes.webp" alt="Hits Produções" loading="lazy"></span><span><img src="/assets/marcas/s4-solucoes.webp" alt="S4 Soluções Visuais" loading="lazy"></span><span><img src="/assets/marcas/supplements.webp" alt="Supplements Sports Nutrition" loading="lazy"></span><span><img src="/assets/marcas/imua-ceara.webp" alt="Imua Ceará Vaca" loading="lazy"></span><span><img src="/assets/marcas/leloyn.webp" alt="Le&#x27;Loyn" loading="lazy"></span><span><img src="/assets/marcas/awe.webp" alt="awe" loading="lazy"></span><span><img src="/assets/marcas/love-nuts.webp" alt="LoveNuts" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/aquaclara.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/peso-carnes.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/ts-health.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/artcenic.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/doterra.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/subli-midia.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/hits-producoes.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/s4-solucoes.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/supplements.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/imua-ceara.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/leloyn.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/awe.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/love-nuts.webp" alt="" loading="lazy"></span></div></div><div class="marcas-linha dir"><div class="marcas-trilho"><span><img src="/assets/marcas/rowa-rose.webp" alt="Rowa" loading="lazy"></span><span><img src="/assets/marcas/bodytech.webp" alt="Bodytech" loading="lazy"></span><span><img src="/assets/marcas/breno-diniz.webp" alt="Breno Diniz Imóveis" loading="lazy"></span><span><img src="/assets/marcas/cherry-glow.webp" alt="Cherry Glow" loading="lazy"></span><span><img src="/assets/marcas/curc-colflex.webp" alt="Curc Creatina e Colflex Whey" loading="lazy"></span><span><img src="/assets/marcas/jatoba.webp" alt="Jatobá Estofados" loading="lazy"></span><span><img src="/assets/marcas/jd-cirurgia.webp" alt="JD Cirurgia Plástica" loading="lazy"></span><span><img src="/assets/marcas/madnutz.webp" alt="MadNutz" loading="lazy"></span><span><img src="/assets/marcas/moura-dubeux.webp" alt="Moura Dubeux" loading="lazy"></span><span><img src="/assets/marcas/naturalle-iceup.webp" alt="Naturalle Iceup" loading="lazy"></span><span><img src="/assets/marcas/qvino.webp" alt="Qvino" loading="lazy"></span><span><img src="/assets/marcas/saladex.webp" alt="Saladex" loading="lazy"></span><span><img src="/assets/marcas/shake2go.webp" alt="Shake2Go" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/rowa-rose.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/bodytech.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/breno-diniz.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/cherry-glow.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/curc-colflex.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/jatoba.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/jd-cirurgia.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/madnutz.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/moura-dubeux.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/naturalle-iceup.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/qvino.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/saladex.webp" alt="" loading="lazy"></span><span aria-hidden="true"><img src="/assets/marcas/shake2go.webp" alt="" loading="lazy"></span></div></div>
+    <div class="center rv"><a class="pill pill-amarelo" href="/parceiros/">Quero minha marca aqui <span>→</span></a></div>
+  </section>
+
+  <!-- DEPOIMENTOS -->
+  <section class="depo" id="depoimentos">
+    <div class="wrap">
+      <p class="eyebrow rv">Quem viveu, recomenda</p>
+      <h2 class="section-title rv">O que dizem sobre o <span class="hl-serif">Soul</span></h2>
+      <div class="depo-grade">
+        <figure class="depo-card rv">
+          <blockquote>O cuidado com cada detalhe, desde o cenário na praia até a proposta da vestimenta em estilo boho chic, tornou a experiência muito acolhedora e elegante.</blockquote>
+          <figcaption>Samya Fernandes Silva</figcaption>
+        </figure>
+        <figure class="depo-card rv">
+          <blockquote>Evento diferente de tudo que já vivi no meio wellness. Foi muito bom conectar com pessoas que têm um estilo de vida parecido com o meu, além de conhecer marcas alinhadas com esporte, saúde e bem-estar.</blockquote>
+          <figcaption>Rayana Silveira</figcaption>
+        </figure>
+        <figure class="depo-card rv">
+          <blockquote>Muitas ativações de patrocinadores tops. Palestras com conteúdos bem proveitosos. Já estou aguardando a segunda edição.</blockquote>
+          <figcaption>Marli Barros</figcaption>
+        </figure>
+      </div>
+      <p class="depo-nota rv">Depoimentos de convidadas da 1ª edição, a Pérola Tropical.</p>
     </div>
   </section>
 
@@ -162,6 +211,7 @@
 
   <!-- SOBRE -->
   <section class="about" id="sobre">
+    <div class="letrao" aria-hidden="true"><span data-letrao>BEM-ESTAR · BEM-ESTAR · BEM-ESTAR · BEM-ESTAR · BEM-ESTAR · BEM-ESTAR</span></div>
     <div class="wrap">
       <p class="about-big" data-palavras>Bem-estar de verdade é <em>viver bem</em>, não seguir padrão.</p>
       <p class="about-small rv">A Vivasso é uma agência voltada para o movimento wellness, a saúde e a qualidade de vida. Criamos projetos que enriquecem corpo e mente e promovem conexão e aprendizado para todas as idades. Aqui ninguém precisa ser perfeito para ser bem-vindo.</p>
@@ -202,6 +252,7 @@
       <a href="/#servicos">Serviços</a>
       <a href="/#soul">Soul Experience</a>
       <a href="/revista/">Revista</a>
+      <a href="/parceiros/">Parceiros</a>
       <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
     </nav>
@@ -230,6 +281,6 @@
     <button type="button" class="pill pill-sm pill-outline" data-cookie="essential">Só os essenciais</button>
   </div>
 </div>
-<script src="/js/site.js?v=1795177063"></script>
+<script src="/js/site.js?v=1795179529"></script>
 </body>
 </html>

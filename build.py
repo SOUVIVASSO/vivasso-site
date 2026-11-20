@@ -21,6 +21,7 @@ SITE_URL = "https://vivasso.com.br"
 VERSAO = str(int(time.time()))
 EMAIL = "contato@vivasso.com.br"
 INSTAGRAM = "https://instagram.com/souvivasso"
+WHATSAPP = "https://wa.me/message/M23TWJ2VIDWAJ1"
 PAGINAS_OCULTAS = {"/agenda/", "/cupons/", "/jogos/", "/jogos/respira/", "/selos/"}
 
 CATEGORIAS = [
@@ -109,6 +110,7 @@ def header(home):
     <a href="{prefixo}#servicos">Serviços</a>
     <a href="{prefixo}#soul">Soul Experience</a>
     <a href="/revista/">Revista</a>
+    <a href="/parceiros/">Parceiros</a>
     <a href="{prefixo}#sobre">Sobre</a>
     <a class="pill pill-sm" href="{prefixo}#contato">Fale com a gente</a>
   </nav>
@@ -131,6 +133,7 @@ def footer(home):
       <a href="/#servicos">Serviços</a>
       <a href="/#soul">Soul Experience</a>
       <a href="/revista/">Revista</a>
+      <a href="/parceiros/">Parceiros</a>
       <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
     </nav>
@@ -261,6 +264,39 @@ def carrega_destaque():
     return meta if meta.get("title") and meta.get("link") else None
 
 
+MARCAS = [
+    ("aquaclara", "Aquaclara"), ("peso-carnes", "Pesō Carnes Especiais"), ("ts-health", "TS Health Center"),
+    ("artcenic", "Artcenic Eventos"), ("doterra", "doTERRA"), ("subli-midia", "Subli Mídia"),
+    ("hits-producoes", "Hits Produções"), ("s4-solucoes", "S4 Soluções Visuais"), ("supplements", "Supplements Sports Nutrition"),
+    ("imua-ceara", "Imua Ceará Vaca"), ("leloyn", "Le'Loyn"), ("awe", "awe"), ("love-nuts", "LoveNuts"),
+    ("rowa-rose", "Rowa"), ("bodytech", "Bodytech"), ("breno-diniz", "Breno Diniz Imóveis"),
+    ("cherry-glow", "Cherry Glow"), ("curc-colflex", "Curc Creatina e Colflex Whey"), ("jatoba", "Jatobá Estofados"),
+    ("jd-cirurgia", "JD Cirurgia Plástica"), ("madnutz", "MadNutz"), ("moura-dubeux", "Moura Dubeux"),
+    ("naturalle-iceup", "Naturalle Iceup"), ("qvino", "Qvino"), ("saladex", "Saladex"), ("shake2go", "Shake2Go"),
+]
+
+
+def html_marcas():
+    def faixa(lista, sentido):
+        itens = "".join(f'<span><img src="/assets/marcas/{f}.webp" alt="{esc(n)}" loading="lazy"></span>' for f, n in lista)
+        itens_b = "".join(f'<span aria-hidden="true"><img src="/assets/marcas/{f}.webp" alt="" loading="lazy"></span>' for f, n in lista)
+        return f'<div class="marcas-linha {sentido}"><div class="marcas-trilho">{itens}{itens_b}</div></div>'
+    meio = len(MARCAS) // 2
+    return faixa(MARCAS[:meio], "esq") + faixa(MARCAS[meio:], "dir")
+
+
+def html_mural():
+    fotos = [("foto-1", "Convidada na primeira edição do Soul Experience"), ("foto-3", "Kit dos participantes da Pérola Tropical"),
+             ("foto-5", "Palestra no Soul Experience"), ("foto-6", "Convidada diante do backdrop do evento"),
+             ("foto-4", "Convite da Pérola Tropical"), ("foto-8", "Convidada na noite da Pérola Tropical"),
+             ("foto-2", "Cena do Soul Experience")]
+    def faixa(lista, sentido):
+        a = "".join(f'<img src="/assets/soul/{f}.webp" alt="{esc(n)}" loading="lazy">' for f, n in lista)
+        b = "".join(f'<img src="/assets/soul/{f}.webp" alt="" aria-hidden="true" loading="lazy">' for f, n in lista)
+        return f'<div class="mural-linha {sentido}"><div class="mural-trilho">{a}{b}</div></div>'
+    return f'<div class="mural">{faixa(fotos, "esq")}{faixa(list(reversed(fotos)), "dir")}</div>'
+
+
 def monta_home(posts):
     hero_card = ""
     destaque = carrega_destaque()
@@ -287,12 +323,90 @@ def monta_home(posts):
         leque = (f'<div class="leque">{capas}</div>'
                  f'<p class="leque-dica">{len(eds)} edições publicadas. Passe o mouse ou deslize para ver as capas.</p>')
 
+    HERO_V, HERO_C = "", ""
+    if (ROOT / "assets" / "video" / "hero.mp4").exists():
+        poster = ' poster="/assets/video/hero.jpg"' if (ROOT / "assets" / "video" / "hero.jpg").exists() else ""
+        HERO_V = ('<video class="hero-video" autoplay muted loop playsinline preload="metadata"' + poster +
+                  ' aria-hidden="true"><source src="/assets/video/hero.mp4" type="video/mp4"></video><div class="hero-veu" aria-hidden="true"></div>')
+        HERO_C = " com-video"
     corpo = (ROOT / "templates" / "home.html").read_text(encoding="utf-8")
-    corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque)
+    corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque).replace("{{HERO_VIDEO}}", HERO_V).replace("{{HERO_CLASSE}}", HERO_C).replace("{{MURAL}}", html_mural()).replace("{{MARCAS}}", html_marcas())
     return pagina(
         "Vivasso",
         "A Vivasso é uma agência de marketing de wellness em Fortaleza. Eventos, revista, captação de patrocínio e agenciamento de influenciadores.",
         corpo, "/", home=True)
+
+
+def monta_parceiros():
+    marcas = html_marcas()
+    corpo = f"""  <section class="blog-head">
+    <div class="wrap">
+      <p class="eyebrow">Parceiros</p>
+      <h1>Sua marca no <span class="hl-serif">bem-estar</span> de Fortaleza</h1>
+      <p>A Vivasso coloca marcas dentro de experiências wellness, no Soul Experience, na revista Viva Vivasso e na voz de criadores de conteúdo.</p>
+      <p><a class="pill" href="{WHATSAPP}" target="_blank" rel="noopener">Falar no WhatsApp <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <section class="par-numeros">
+    <div class="wrap">
+      <div class="soul-numeros">
+        <div class="rv"><b data-contar="100">100</b><span>convidados na 1ª edição</span></div>
+        <div class="rv"><b data-contar="80" data-sufixo=" mil">80 mil</b><span>pessoas alcançadas na 1ª edição</span></div>
+        <div class="rv"><b data-contar="495" data-sufixo=" mil">495 mil</b><span>seguidores somados dos criadores convidados da 2ª edição</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="par-ganha">
+    <div class="wrap">
+      <p class="eyebrow rv">O que sua marca ganha</p>
+      <h2 class="section-title rv">Presença de verdade, <span class="hl-serif">do começo ao fim</span></h2>
+      <div class="par-grade">
+        <div class="par-item rv"><span>01</span><h3>Presença no evento</h3><p>Sua marca no backdrop e no material do Soul Experience.</p></div>
+        <div class="par-item rv"><span>02</span><h3>Ativação ao vivo</h3><p>Espaço para a marca interagir com o público durante o evento.</p></div>
+        <div class="par-item rv"><span>03</span><h3>Welcome Kit</h3><p>Seu produto na mão de cada participante.</p></div>
+        <div class="par-item rv"><span>04</span><h3>Divulgação digital</h3><p>Destaque nas mídias do evento e na voz de criadores de conteúdo parceiros.</p></div>
+        <div class="par-item rv"><span>05</span><h3>Leads do evento</h3><p>Mala direta para o público que participou, nas cotas que incluem esse benefício.</p></div>
+        <div class="par-item rv"><span>06</span><h3>Revista Viva Vivasso</h3><p>Também criamos uma edição da revista dedicada ao seu evento ou marca.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="par-passos">
+    <div class="wrap">
+      <p class="eyebrow eyebrow-claro rv">Como funciona</p>
+      <h2 class="section-title claro rv">Em três passos</h2>
+      <ol class="par-lista">
+        <li class="rv"><b>1</b><div><h3>Você fala com a gente</h3><p>Pelo WhatsApp ou por e-mail. Conte o que a sua marca procura.</p></div></li>
+        <li class="rv"><b>2</b><div><h3>Escolhe a cota</h3><p>Cada edição tem cotas e formatos próprios. Os valores e as vagas ficam na página de patrocínio do Soul.</p></div></li>
+        <li class="rv"><b>3</b><div><h3>Fechamos os detalhes</h3><p>A equipe da Vivasso alinha a ativação e acompanha sua marca até o dia do evento.</p></div></li>
+      </ol>
+      <div class="par-botoes rv">
+        <a class="pill pill-amarelo" href="https://soulexperience.vivasso.com.br/patrocinio/" target="_blank" rel="noopener">Ver cotas do Soul <span aria-hidden="true">→</span></a>
+        <a class="link light" href="mailto:contato@vivasso.com.br?subject=Quero%20ser%20parceiro%20da%20Vivasso">Falar por e-mail</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="marcas par-marcas">
+    <div class="wrap">
+      <p class="eyebrow eyebrow-claro rv">Quem já esteve com a gente</p>
+      <h2 class="section-title claro rv">Marcas da 1ª edição</h2>
+    </div>
+    {marcas}
+  </section>
+
+  <section class="par-criadores">
+    <div class="wrap">
+      <p class="eyebrow rv">Para criadores de conteúdo</p>
+      <h2 class="section-title rv">Você é <span class="hl-serif">influenciador</span> de wellness?</h2>
+      <p class="rv">Conectamos criadores a marcas e eventos de bem-estar em Fortaleza. Conte quem você é e onde você publica.</p>
+      <p class="rv"><a class="pill" href="mailto:contato@vivasso.com.br?subject=Sou%20influenciador">Quero conversar <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>"""
+    return pagina("Parceiros", "Coloque sua marca em experiências de bem-estar com a Vivasso: Soul Experience, revista Viva Vivasso e criadores de conteúdo em Fortaleza.",
+                  corpo, "/parceiros/", body_class="inner")
 
 
 # ---------- agenda ----------
@@ -875,6 +989,7 @@ def main():
     eds = carrega_revista()
     escreve("/", monta_home(posts))
     escreve("/revista/", monta_revista(eds))
+    escreve("/parceiros/", monta_parceiros())
     escreve("/blog/", monta_blog_antigo())
     escreve("/agenda/", monta_agenda(carrega_agenda()))
     escreve("/cupons/", monta_cupons(carrega_cupons()))
@@ -884,7 +999,7 @@ def main():
     escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/revista/"]
+    urls = ["/", "/revista/", "/parceiros/"]
     for e in eds:
         escreve(f"/revista/edicao-{e['num']}/", monta_edicao(e))
         urls.append(f"/revista/edicao-{e['num']}/")
