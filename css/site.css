@@ -854,3 +854,7 @@ html,body{overflow-x:clip}
   .hero h1{max-width:none}
   .hero-veu{background:linear-gradient(180deg,rgba(14,52,104,.9) 0%,rgba(82,60,160,.82) 55%,rgba(176,77,130,.6) 100%)}
 }
+
+/* TOPO LEGIVEL (v7): veu unico, igual em todo o fundo */
+.hero-veu,.hero-veu{background:rgba(64,44,138,.66)}
+@media (max-width:760px){.hero-veu{background:rgba(64,44,138,.7)}}

@@ -308,16 +308,51 @@
   atualiza();
 })();
 
-// jingle da Vivasso: so toca quando a pessoa clica
+// jingle da Vivasso: toca no topo e some com suavidade ao descer
 (function () {
-  var b = document.getElementById('jingle'), a = document.getElementById('jingle-audio');
-  if (!b || !a) return;
-  var txt = b.querySelector('.jingle-texto');
-  function para() { b.setAttribute('aria-pressed', 'false'); txt.textContent = 'Ouça o jingle'; }
+  var b = document.getElementById('jingle'), a = document.getElementById('jingle-audio'), hero = document.getElementById('hero');
+  if (!b || !a || !hero) return;
+  var txt = b.querySelector('.jingle-texto'), alto = 0.7;
+  var visivel = true, desligado = false, tocando = false, anim = null;
+  a.loop = true;
+  function ui(on) { tocando = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); txt.textContent = on ? 'Som ligado' : 'Ouça o jingle'; }
+  function fade(para, ms, fim) {
+    if (anim) cancelAnimationFrame(anim);
+    var de = a.volume, t0 = null;
+    function f(t) {
+      if (t0 === null) t0 = t;
+      var k = Math.min((t - t0) / ms, 1);
+      a.volume = Math.max(0, Math.min(1, de + (para - de) * k));
+      if (k < 1) anim = requestAnimationFrame(f); else { anim = null; if (fim) fim(); }
+    }
+    anim = requestAnimationFrame(f);
+  }
+  function toca() {
+    if (desligado || !visivel || tocando) return;
+    a.volume = 0;
+    var p = a.play();
+    if (p && p.then) p.then(function () { ui(true); fade(alto, 1400); }).catch(function () { ui(false); });
+  }
+  function some() {
+    if (!tocando) return;
+    ui(false);
+    fade(0, 900, function () { a.pause(); });
+  }
   b.addEventListener('click', function () {
-    if (a.paused) {
-      a.play().then(function () { b.setAttribute('aria-pressed', 'true'); txt.textContent = 'Tocando... clique para parar'; }).catch(para);
-    } else { a.pause(); para(); }
+    if (tocando) { desligado = true; some(); }
+    else { desligado = false; visivel = true; toca(); }
   });
-  a.addEventListener('ended', function () { a.currentTime = 0; para(); });
+  ['pointerdown', 'keydown', 'touchend'].forEach(function (nome) {
+    document.addEventListener(nome, function (e) {
+      if (b.contains(e.target)) return;
+      toca();
+    }, { passive: true });
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      visivel = es[0].isIntersecting;
+      if (visivel) toca(); else some();
+    }, { threshold: 0.25 }).observe(hero);
+  }
+  toca();
 })();
