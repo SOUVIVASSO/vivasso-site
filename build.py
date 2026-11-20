@@ -325,9 +325,9 @@ def monta_home(posts):
 
     HERO_V, HERO_C = "", ""
     if (ROOT / "assets" / "video" / "hero.mp4").exists():
-        poster = ' poster="/assets/video/hero.jpg"' if (ROOT / "assets" / "video" / "hero.jpg").exists() else ""
+        poster = ' poster="/assets/video/hero.jpg?v=' + VERSAO + '"' if (ROOT / "assets" / "video" / "hero.jpg").exists() else ""
         HERO_V = ('<video class="hero-video" autoplay muted loop playsinline preload="metadata"' + poster +
-                  ' aria-hidden="true"><source src="/assets/video/hero.mp4" type="video/mp4"></video><div class="hero-veu" aria-hidden="true"></div>')
+                  ' aria-hidden="true"><source src="/assets/video/hero.mp4?v='+VERSAO+'" type="video/mp4"></video><div class="hero-veu" aria-hidden="true"></div>')
         HERO_C = " com-video"
     corpo = (ROOT / "templates" / "home.html").read_text(encoding="utf-8")
     corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque).replace("{{HERO_VIDEO}}", HERO_V).replace("{{HERO_CLASSE}}", HERO_C).replace("{{MURAL}}", html_mural()).replace("{{MARCAS}}", html_marcas())
