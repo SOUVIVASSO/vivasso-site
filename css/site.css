@@ -858,3 +858,8 @@ html,body{overflow-x:clip}
 /* TOPO LEGIVEL (v7): veu unico, igual em todo o fundo */
 .hero-veu,.hero-veu{background:rgba(64,44,138,.66)}
 @media (max-width:760px){.hero-veu{background:rgba(64,44,138,.7)}}
+
+.jingle.chama{background:var(--yellow);color:var(--ink);border-color:var(--yellow);animation:chama 1.6s ease-in-out infinite}
+.jingle.chama .jingle-icone i{background:var(--ink)}
+@keyframes chama{0%,100%{box-shadow:0 0 0 0 rgba(253,183,42,.7)}50%{box-shadow:0 0 0 14px rgba(253,183,42,0)}}
+@media (prefers-reduced-motion:reduce){.jingle.chama{animation:none}}

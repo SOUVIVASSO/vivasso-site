@@ -315,7 +315,7 @@
   var txt = b.querySelector('.jingle-texto'), alto = 0.7;
   var visivel = true, desligado = false, tocando = false, anim = null;
   a.loop = true;
-  function ui(on) { tocando = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); txt.textContent = on ? 'Som ligado' : 'Ouça o jingle'; }
+  function ui(on, bloqueado) { tocando = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('chama', !!bloqueado); txt.textContent = on ? 'Som ligado' : (bloqueado ? 'Toque para ouvir' : 'Ouça o jingle'); }
   function fade(para, ms, fim) {
     if (anim) cancelAnimationFrame(anim);
     var de = a.volume, t0 = null;
@@ -331,7 +331,7 @@
     if (desligado || !visivel || tocando) return;
     a.volume = 0;
     var p = a.play();
-    if (p && p.then) p.then(function () { ui(true); fade(alto, 1400); }).catch(function () { ui(false); });
+    if (p && p.then) p.then(function () { ui(true); fade(alto, 1400); }).catch(function () { ui(false, true); });
   }
   function some() {
     if (!tocando) return;
