@@ -863,3 +863,10 @@ html,body{overflow-x:clip}
 .jingle.chama .jingle-icone i{background:var(--ink)}
 @keyframes chama{0%,100%{box-shadow:0 0 0 0 rgba(253,183,42,.7)}50%{box-shadow:0 0 0 14px rgba(253,183,42,0)}}
 @media (prefers-reduced-motion:reduce){.jingle.chama{animation:none}}
+
+/* JOGO NA HOME */
+.jogo-home{padding:100px 0;background:linear-gradient(180deg,#e9f3fb,var(--paper))}
+.jogo-home-grade{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.jogo-home-arte img{display:block;width:100%;height:auto;border-radius:28px;box-shadow:0 24px 60px rgba(16,60,110,.22)}
+.jogo-home-texto p{font-size:18px;line-height:1.6;margin-bottom:22px;max-width:480px}
+@media (max-width:860px){.jogo-home{padding:70px 0}.jogo-home-grade{grid-template-columns:1fr;gap:30px}}

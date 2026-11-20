@@ -356,5 +356,35 @@
     }, { threshold: 0.25 }).observe(hero);
   }
   a.addEventListener('ended', function () { acabou = true; a.currentTime = 0; ui(false); });
+  var eraTocando = false;
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (anim) { cancelAnimationFrame(anim); anim = null; }
+      eraTocando = tocando;
+      if (tocando) { a.pause(); a.volume = 0; ui(false); }
+    } else if (eraTocando && !desligado && !acabou && visivel) {
+      eraTocando = false; toca();
+    }
+  });
+  window.addEventListener('pagehide', function () { a.pause(); });
   toca();
+})();
+
+// video do topo: versao em pe no celular, deitada no computador
+(function () {
+  var v = document.querySelector('.hero-video[data-pc]');
+  if (!v) return;
+  var mq = window.matchMedia('(max-width: 760px)'), atual = '';
+  function escolhe() {
+    var cel = mq.matches && v.getAttribute('data-cel');
+    var src = cel ? v.getAttribute('data-cel') : v.getAttribute('data-pc');
+    if (src === atual) return;
+    atual = src;
+    if (cel && v.getAttribute('data-poster-cel')) v.setAttribute('poster', v.getAttribute('data-poster-cel'));
+    v.src = src;
+    v.load();
+    var p = v.play(); if (p && p.catch) p.catch(function () {});
+  }
+  escolhe();
+  if (mq.addEventListener) mq.addEventListener('change', escolhe);
 })();

@@ -22,7 +22,8 @@ VERSAO = str(int(time.time()))
 EMAIL = "contato@vivasso.com.br"
 INSTAGRAM = "https://instagram.com/souvivasso"
 WHATSAPP = "https://wa.me/message/M23TWJ2VIDWAJ1"
-PAGINAS_OCULTAS = {"/agenda/", "/cupons/", "/jogos/", "/jogos/respira/", "/selos/"}
+PAGINAS_OCULTAS = {"/agenda/", "/cupons/", "/selos/"}
+PAGINAS_COM_SELOS = {"/agenda/", "/cupons/", "/selos/", "/jogos/", "/jogos/respira/"}
 
 CATEGORIAS = [
     ("movimento", "Movimento"),
@@ -111,6 +112,7 @@ def header(home):
     <a href="{prefixo}#soul">Soul Experience</a>
     <a href="/revista/">Revista</a>
     <a href="/parceiros/">Parceiros</a>
+    <a href="/jogos/">Jogos</a>
     <a href="{prefixo}#sobre">Sobre</a>
     <a class="pill pill-sm" href="{prefixo}#contato">Fale com a gente</a>
   </nav>
@@ -134,6 +136,7 @@ def footer(home):
       <a href="/#soul">Soul Experience</a>
       <a href="/revista/">Revista</a>
       <a href="/parceiros/">Parceiros</a>
+      <a href="/jogos/">Jogos</a>
       <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
     </nav>
@@ -171,7 +174,7 @@ def pagina(titulo, descricao, corpo, caminho, home=False, extra_head="", body_cl
     oculta = caminho in PAGINAS_OCULTAS
     if oculta:
         extra_head += '<meta name="robots" content="noindex">'
-    selos = f'<script src="/js/selos.js?v={VERSAO}"></script>\n' if oculta else ""
+    selos = f'<script src="/js/selos.js?v={VERSAO}"></script>\n' if caminho in PAGINAS_COM_SELOS else ""
     titulo_completo = "Vivasso | viva sua marca viva" if home else f"{titulo} | Vivasso"
     return f"""<!doctype html>
 <html lang="pt-BR">
@@ -326,9 +329,14 @@ def monta_home(posts):
 
     HERO_V, HERO_C = "", ""
     if (ROOT / "assets" / "video" / "hero.mp4").exists():
-        poster = ' poster="/assets/video/hero.jpg?v=' + VERSAO + '"' if (ROOT / "assets" / "video" / "hero.jpg").exists() else ""
-        HERO_V = ('<video class="hero-video" autoplay muted loop playsinline preload="metadata"' + poster +
-                  ' aria-hidden="true"><source src="/assets/video/hero.mp4?v='+VERSAO+'" type="video/mp4"></video><div class="hero-veu" aria-hidden="true"></div>')
+        v = "?v=" + VERSAO
+        tem_cel = (ROOT / "assets" / "video" / "hero-cel.mp4").exists()
+        dados = ' data-pc="/assets/video/hero.mp4' + v + '"'
+        if tem_cel:
+            dados += ' data-cel="/assets/video/hero-cel.mp4' + v + '" data-poster-cel="/assets/video/hero-cel.jpg' + v + '"'
+        poster = ' poster="/assets/video/hero.jpg' + v + '"' if (ROOT / "assets" / "video" / "hero.jpg").exists() else ""
+        HERO_V = ('<video class="hero-video" autoplay muted loop playsinline preload="metadata"' + poster + dados +
+                  ' aria-hidden="true"></video><div class="hero-veu" aria-hidden="true"></div>')
         HERO_C = " com-video"
     corpo = (ROOT / "templates" / "home.html").read_text(encoding="utf-8")
     corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque).replace("{{HERO_VIDEO}}", HERO_V).replace("{{HERO_CLASSE}}", HERO_C).replace("{{MURAL}}", html_mural()).replace("{{MARCAS}}", html_marcas())
@@ -1000,7 +1008,7 @@ def main():
     escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/revista/", "/parceiros/"]
+    urls = ["/", "/revista/", "/parceiros/", "/jogos/", "/jogos/respira/"]
     for e in eds:
         escreve(f"/revista/edicao-{e['num']}/", monta_edicao(e))
         urls.append(f"/revista/edicao-{e['num']}/")
