@@ -312,7 +312,7 @@
 (function () {
   var b = document.getElementById('jingle'), a = document.getElementById('jingle-audio'), hero = document.getElementById('hero');
   if (!b || !a || !hero) return;
-  var txt = b.querySelector('.jingle-texto'), alto = 0.7;
+  var txt = b.querySelector('.jingle-texto'), alto = 0.3;
   var visivel = true, desligado = false, tocando = false, anim = null;
   a.loop = true;
   function ui(on, bloqueado) { tocando = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('chama', !!bloqueado); txt.textContent = on ? 'Som ligado' : (bloqueado ? 'Toque para ouvir' : 'Ouça o jingle'); }
@@ -342,7 +342,7 @@
     if (tocando) { desligado = true; some(); }
     else { desligado = false; visivel = true; toca(); }
   });
-  ['pointerdown', 'keydown', 'touchend'].forEach(function (nome) {
+  ['pointerdown', 'pointerup', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend'].forEach(function (nome) {
     document.addEventListener(nome, function (e) {
       if (b.contains(e.target)) return;
       toca();
