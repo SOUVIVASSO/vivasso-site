@@ -312,9 +312,10 @@
 (function () {
   var b = document.getElementById('jingle'), a = document.getElementById('jingle-audio'), hero = document.getElementById('hero');
   if (!b || !a || !hero) return;
-  var txt = b.querySelector('.jingle-texto'), alto = 0.3;
+  var txt = b.querySelector('.jingle-texto'), alto = 0.45;
   var visivel = true, desligado = false, tocando = false, anim = null;
-  a.loop = true;
+  a.loop = false;
+  var acabou = false;
   function ui(on, bloqueado) { tocando = on; b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('chama', !!bloqueado); txt.textContent = on ? 'Som ligado' : (bloqueado ? 'Toque para ouvir' : 'Ouça o jingle'); }
   function fade(para, ms, fim) {
     if (anim) cancelAnimationFrame(anim);
@@ -328,7 +329,7 @@
     anim = requestAnimationFrame(f);
   }
   function toca() {
-    if (desligado || !visivel || tocando) return;
+    if (desligado || acabou || !visivel || tocando) return;
     a.volume = 0;
     var p = a.play();
     if (p && p.then) p.then(function () { ui(true); fade(alto, 1400); }).catch(function () { ui(false, true); });
@@ -340,7 +341,7 @@
   }
   b.addEventListener('click', function () {
     if (tocando) { desligado = true; some(); }
-    else { desligado = false; visivel = true; toca(); }
+    else { desligado = false; acabou = false; visivel = true; if (a.ended || a.currentTime > a.duration - 0.5) a.currentTime = 0; toca(); }
   });
   ['pointerdown', 'pointerup', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend'].forEach(function (nome) {
     document.addEventListener(nome, function (e) {
@@ -354,5 +355,6 @@
       if (visivel) toca(); else some();
     }, { threshold: 0.25 }).observe(hero);
   }
+  a.addEventListener('ended', function () { acabou = true; a.currentTime = 0; ui(false); });
   toca();
 })();
