@@ -233,3 +233,44 @@
   var sec = document.getElementById('cupons-destaque');
   if (sec && !vis) sec.hidden = true;
 })();
+
+// movimento ao rolar: blocos e palavras aparecem, numeros sobem
+(function () {
+  var reduz = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-palavras]').forEach(function (el) {
+    function quebra(no) {
+      Array.prototype.slice.call(no.childNodes).forEach(function (c) {
+        if (c.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function (p) {
+            if (!p) return;
+            if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+            var s = document.createElement('span'); s.className = 'pal'; s.textContent = p; frag.appendChild(s);
+          });
+          c.parentNode.replaceChild(frag, c);
+        } else if (c.nodeType === 1) quebra(c);
+      });
+    }
+    quebra(el);
+    var i = 0;
+    el.querySelectorAll('.pal').forEach(function (s) { s.style.transitionDelay = (i++ * 70) + 'ms'; });
+  });
+  var alvos = document.querySelectorAll('.rv,[data-palavras],[data-contar]');
+  function conta(el) {
+    var alvo = +el.dataset.contar, suf = el.dataset.sufixo || '', t0 = null, dur = 1500;
+    function f(t) {
+      if (!t0) t0 = t;
+      var k = Math.min((t - t0) / dur, 1);
+      el.textContent = Math.round(alvo * (1 - Math.pow(1 - k, 3))) + suf;
+      if (k < 1) requestAnimationFrame(f);
+    }
+    requestAnimationFrame(f);
+  }
+  function mostra(el) { el.classList.add('in'); if (el.dataset.contar && !reduz) conta(el); }
+  if (reduz || !('IntersectionObserver' in window)) { alvos.forEach(function (a) { a.classList.add('in'); }); return; }
+  document.querySelectorAll('[data-contar]').forEach(function (el) { el.textContent = '0' + (el.dataset.sufixo || ''); });
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { mostra(e.target); io.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  alvos.forEach(function (a) { io.observe(a); });
+})();

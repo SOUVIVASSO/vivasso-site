@@ -21,6 +21,7 @@ SITE_URL = "https://vivasso.com.br"
 VERSAO = str(int(time.time()))
 EMAIL = "contato@vivasso.com.br"
 INSTAGRAM = "https://instagram.com/souvivasso"
+PAGINAS_OCULTAS = {"/agenda/", "/cupons/", "/jogos/", "/jogos/respira/", "/selos/"}
 
 CATEGORIAS = [
     ("movimento", "Movimento"),
@@ -105,10 +106,9 @@ def header(home):
   </a>
   <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="nav-links" aria-label="Principal">
-    <a href="/agenda/">Agenda</a>
+    <a href="{prefixo}#servicos">Serviços</a>
+    <a href="{prefixo}#soul">Soul Experience</a>
     <a href="/revista/">Revista</a>
-    <a href="/jogos/">Jogos</a>
-    <a href="{prefixo}#projetos">Projetos</a>
     <a href="{prefixo}#sobre">Sobre</a>
     <a class="pill pill-sm" href="{prefixo}#contato">Fale com a gente</a>
   </nav>
@@ -128,12 +128,9 @@ def footer(home):
     </div>
     <nav aria-label="Navegue">
       <h4>Navegue</h4>
-      <a href="/agenda/">Agenda</a>
-      <a href="/cupons/">Cupons</a>
-      <a href="/jogos/">Jogos</a>
-      <a href="/selos/">Meus selos</a>
+      <a href="/#servicos">Serviços</a>
+      <a href="/#soul">Soul Experience</a>
       <a href="/revista/">Revista</a>
-      <a href="/#projetos">Projetos</a>
       <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
     </nav>
@@ -168,6 +165,10 @@ COOKIE_BANNER = """<div class="cookie" id="cookie" role="dialog" aria-live="poli
 
 def pagina(titulo, descricao, corpo, caminho, home=False, extra_head="", body_class=""):
     url = SITE_URL + caminho
+    oculta = caminho in PAGINAS_OCULTAS
+    if oculta:
+        extra_head += '<meta name="robots" content="noindex">'
+    selos = f'<script src="/js/selos.js?v={VERSAO}"></script>\n' if oculta else ""
     titulo_completo = "Vivasso | viva sua marca viva" if home else f"{titulo} | Vivasso"
     return f"""<!doctype html>
 <html lang="pt-BR">
@@ -188,6 +189,7 @@ def pagina(titulo, descricao, corpo, caminho, home=False, extra_head="", body_cl
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&family=Source+Serif+4:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="/css/site.css?v={VERSAO}">
 {extra_head}
 </head>
@@ -198,8 +200,7 @@ def pagina(titulo, descricao, corpo, caminho, home=False, extra_head="", body_cl
 </main>
 {footer(home)}
 {COOKIE_BANNER}
-<script src="/js/selos.js?v={VERSAO}"></script>
-<script src="/js/site.js?v={VERSAO}"></script>
+{selos}<script src="/js/site.js?v={VERSAO}"></script>
 </body>
 </html>
 """
@@ -261,20 +262,6 @@ def carrega_destaque():
 
 
 def monta_home(posts):
-    agenda = carrega_agenda()
-    por_cat = {slug: [e for e in agenda if e["category"] == slug] for slug, _ in CATEGORIAS}
-
-    tiles = []
-    for slug, nome in CATEGORIAS:
-        if slug == "cupons":
-            continue
-        n = len(por_cat[slug])
-        contagem = "em breve" if n == 0 else f"{n} {'evento' if n == 1 else 'eventos'}"
-        destino = f"/agenda/?categoria={slug}" if n else "/agenda/"
-        tiles.append(f"""        <a class="tile cat-{slug}" href="{destino}"{estilo_img(imagem_cat(slug))}>
-          <b>{esc(nome)}</b><small>{contagem}</small>
-        </a>""")
-
     hero_card = ""
     destaque = carrega_destaque()
     if destaque:
@@ -291,39 +278,20 @@ def monta_home(posts):
     </div>"""
 
     eds = carrega_revista()
-    revista = ""
+    leque = ""
     if eds:
         capas = "".join(
-            f'<a class="rev-capa" href="/revista/edicao-{e["num"]}/"><img src="/assets/revista/{e["num"]}/capa.webp" '
-            f'alt="Capa da edição {int(e["num"])} da Viva Vivasso" loading="lazy" width="{e["capa_largura"]}" height="{e["capa_altura"]}">'
-            f'<span>#{e["num"]}</span></a>' for e in eds[:4])
-        revista = f'<div class="rev-capas">{capas}</div>'
-
-    hoje = date.today().isoformat()
-    cupons = [c for c in carrega_cupons() if not c.get("until") or c["until"] >= hoje][:3]
-    cupons_secao = ""
-    if cupons:
-        cartoes = "".join(
-            f'<a class="cp-mini" data-until="{esc(c.get("until", ""))}" href="/cupons/">'
-            f'<small>{esc(c.get("partner", ""))}</small><b>{esc(c["title"])}</b><span>{esc(c.get("offer", ""))}</span></a>'
-            for c in cupons)
-        cupons_secao = f"""  <section class="cupons-destaque" id="cupons-destaque">
-    <div class="wrap">
-      <p class="eyebrow">Cupons em destaque</p>
-      <h2 class="section-title">Descontos que <span class="hl-serif">fazem bem</span></h2>
-      <div class="cp-minis">{cartoes}</div>
-      <p><a class="link" href="/cupons/">Ver todos os cupons →</a></p>
-    </div>
-  </section>"""
+            f'<a class="leque-capa" href="/revista/edicao-{e["num"]}/" aria-label="Abrir a edição {int(e["num"])}">'
+            f'<img src="/assets/revista/{e["num"]}/capa.webp" alt="Capa da edição {int(e["num"])} da Viva Vivasso" loading="lazy" '
+            f'width="{e["capa_largura"]}" height="{e["capa_altura"]}"></a>' for e in eds[:7])
+        leque = (f'<div class="leque">{capas}</div>'
+                 f'<p class="leque-dica">{len(eds)} edições publicadas. Passe o mouse ou deslize para ver as capas.</p>')
 
     corpo = (ROOT / "templates" / "home.html").read_text(encoding="utf-8")
-    corpo = (corpo.replace("{{HERO_CARD}}", hero_card)
-                  .replace("{{EXPLORE}}", "\n".join(tiles))
-                  .replace("{{REVISTA}}", revista)
-                  .replace("{{CUPONS_SECAO}}", cupons_secao))
+    corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque)
     return pagina(
         "Vivasso",
-        "Vivasso é uma agência de marketing de wellness. Agenda, revista, jogos e cupons para viver bem a cidade.",
+        "A Vivasso é uma agência de marketing de wellness em Fortaleza. Eventos, revista, captação de patrocínio e agenciamento de influenciadores.",
         corpo, "/", home=True)
 
 
@@ -569,7 +537,7 @@ def monta_revista(eds):
     <div class="wrap">
       <p class="eyebrow">Revista</p>
       <h1>Viva <span class="hl-serif">Vivasso</span></h1>
-      <p>A nossa revista sobre bem-estar e o que acontece na cidade. Escolha uma edição e folheie.</p>
+      <p>Uma revista digital em formato de carrossel, com curadoria dos melhores eventos e experiências wellness de Fortaleza. Escolha uma edição e folheie.</p>
     </div>
   </section>
   <section class="blog-list">
@@ -577,7 +545,7 @@ def monta_revista(eds):
       {lista}
     </div>
   </section>"""
-    return pagina("Revista", "Viva Vivasso, a revista da Vivasso sobre bem-estar e o que acontece na cidade. Folheie todas as edições.",
+    return pagina("Revista", "Viva Vivasso, a revista digital da Vivasso com curadoria dos melhores eventos wellness de Fortaleza. Folheie todas as edições.",
                   corpo, "/revista/", body_class="inner")
 
 
@@ -916,7 +884,7 @@ def main():
     escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/agenda/", "/cupons/", "/jogos/", "/selos/", "/jogos/respira/", "/revista/"]
+    urls = ["/", "/revista/"]
     for e in eds:
         escreve(f"/revista/edicao-{e['num']}/", monta_edicao(e))
         urls.append(f"/revista/edicao-{e['num']}/")
