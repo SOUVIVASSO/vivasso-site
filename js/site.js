@@ -311,7 +311,7 @@
 // jingle da Vivasso: toca no topo e some com suavidade ao descer
 (function () {
   var b = document.getElementById('jingle'), a = document.getElementById('jingle-audio'), hero = document.getElementById('hero');
-  if (!b || !a || !hero) return;
+  if (!b || !a || !hero || location.search.indexOf('semsom') > -1) return;
   var txt = b.querySelector('.jingle-texto'), alto = 0.45;
   var visivel = true, desligado = false, tocando = false, anim = null;
   a.loop = false;
@@ -387,4 +387,34 @@
   }
   escolhe();
   if (mq.addEventListener) mq.addEventListener('change', escolhe);
+})();
+
+
+// abas do Soul: cada edicao muda o clima da secao
+(function () {
+  var sec = document.getElementById('soul');
+  if (!sec) return;
+  var abas = sec.querySelectorAll('.soul-aba'), paineis = sec.querySelectorAll('.soul-painel');
+  function vai(n, foco) {
+    sec.setAttribute('data-ed', n);
+    abas.forEach(function (a) {
+      var on = a.getAttribute('data-ed') === n;
+      a.classList.toggle('on', on);
+      a.setAttribute('aria-selected', on ? 'true' : 'false');
+      a.tabIndex = on ? 0 : -1;
+      if (on && foco) a.focus();
+    });
+    paineis.forEach(function (p) {
+      var on = p.getAttribute('data-ed') === n;
+      p.classList.toggle('on', on);
+      p.setAttribute('aria-hidden', on ? 'false' : 'true');
+    });
+  }
+  abas.forEach(function (a) {
+    a.addEventListener('click', function () { vai(a.getAttribute('data-ed')); });
+    a.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') vai(a.getAttribute('data-ed') === '1' ? '2' : '1', true);
+    });
+  });
+  vai('1');
 })();

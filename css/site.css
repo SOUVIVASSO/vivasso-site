@@ -874,3 +874,70 @@ html,body{overflow-x:clip}
 /* TITULO CURTO (slogan) */
 .hero h1{font-size:clamp(40px,6.2vw,92px);max-width:none}
 @media (max-width:760px){.hero h1{font-size:clamp(40px,12vw,56px)}}
+
+
+/* V8 TOPO CENTRAL (referencia: calma e foco do site do Soul) */
+.hero.hero-centro{display:flex;align-items:center;justify-content:center;text-align:center}
+.hero-centro .hero-inner{margin:0 auto;max-width:860px;padding:0 clamp(28px,6vw,80px);display:flex;flex-direction:column;align-items:center}
+.hero-selo{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);padding:9px 18px;border-radius:999px;margin-bottom:26px}
+.hero-centro h1{font-size:clamp(44px,7vw,104px);line-height:1.02;max-width:none;margin:0 0 20px;letter-spacing:.005em}
+.hero-centro .lead{font-size:clamp(18px,1.6vw,22px);max-width:520px;margin:0 auto 34px}
+.hero-centro .hero-cta{justify-content:center;gap:16px;flex-wrap:wrap}
+.hero-veu{background:rgba(26,16,64,.74)}
+@media (max-width:760px){.hero-veu{background:rgba(26,16,64,.76)}.hero-centro h1{font-size:clamp(42px,13vw,64px)}}
+
+/* projetos: dois cartoes grandes */
+.serv-grid{grid-template-columns:1fr 1fr}
+.serv{min-height:320px}
+
+/* SOUL EM ABAS: cada edicao muda o clima da secao inteira */
+.soul{background:#1b1530;isolation:isolate}
+.soul-fundo{position:absolute;inset:0;z-index:0;transition:opacity .9s ease;pointer-events:none}
+.sf-1{background:radial-gradient(circle at 18% 12%,rgba(243,220,194,.22),transparent 45%),linear-gradient(160deg,#4d1822,#8a3d46 62%,#b96a62)}
+.sf-2{background:radial-gradient(circle at 85% 8%,rgba(127,227,255,.32),transparent 42%),radial-gradient(circle at 10% 90%,rgba(210,129,170,.3),transparent 45%),linear-gradient(150deg,#0e1a3f,#33288a 58%,#1079aa)}
+.soul[data-ed="1"] .sf-2{opacity:0}
+.soul[data-ed="2"] .sf-1{opacity:0}
+.soul .wrap{position:relative;z-index:2}
+.soul .forma{display:none}
+.soul-abas{display:flex;gap:14px;margin:0 0 30px;flex-wrap:wrap}
+.soul-aba{font:inherit;color:#fff;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.28);border-radius:20px;padding:16px 26px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;transition:background .3s,border-color .3s,transform .3s}
+.soul-aba b{font-size:20px;font-weight:600}
+.soul-aba small{font-size:14px;opacity:.85}
+.soul-aba:hover{background:rgba(255,255,255,.16)}
+.soul-aba.on{background:#fff;color:#1b1530;border-color:#fff}
+.soul-aba.on small{opacity:.75}
+.soul-paineis{display:grid}
+.soul-painel{grid-area:1/1;opacity:0;visibility:hidden;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease,visibility .7s;max-width:760px}
+.soul-painel.on{opacity:1;visibility:visible;transform:none}
+.sp-data{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--acc,#ffe9b3);margin-bottom:12px}
+.soul-painel h3{font-size:clamp(40px,6vw,84px);line-height:1.02;margin-bottom:18px}
+.sp-texto{font-size:19px;line-height:1.6;color:#f3eefb;margin-bottom:28px;max-width:600px}
+.sp-numeros{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.sp-numeros div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:20px 24px;display:flex;flex-direction:column;gap:4px;min-width:160px}
+.sp-numeros b{font-size:clamp(34px,4vw,52px);line-height:1;color:var(--acc,#ffe9b3)}
+.sp-numeros span{font-size:14px;color:#f3eefb}
+.pill-claro{background:#fff;color:#1b1530}
+/* ed 1: Perola Tropical, serifada e quente */
+.soul-painel[data-ed="1"]{--acc:#f6dcbc}
+.soul-painel[data-ed="1"] h3{font-family:var(--font-serif);font-style:italic;font-weight:600}
+.soul-painel[data-ed="1"] .sp-numeros b{font-family:var(--font-serif);font-style:italic;font-weight:600}
+/* ed 2: Circuito das Estacoes, esportiva e hologram */
+.soul-painel[data-ed="2"]{--acc:#8ee8ff}
+.soul-painel[data-ed="2"] h3{font-family:var(--font-display);font-weight:400;text-transform:uppercase;letter-spacing:.01em}
+.soul-painel[data-ed="2"] .sp-numeros b{font-family:var(--font-display);font-weight:400}
+.soul[data-ed="1"] .hl-amarelo{color:#f6dcbc}
+.soul[data-ed="2"] .hl-amarelo{color:#8ee8ff}
+@media (max-width:760px){.soul-abas{gap:10px}.soul-aba{padding:13px 18px;flex:1}.sp-numeros div{min-width:0;flex:1}}
+
+/* depoimentos */
+.depo-nota-topo{font-size:18px;margin:-8px 0 8px;color:#4a4458}
+.depo-nota-topo b{font-size:22px;color:var(--ink)}
+.estrelas{color:#fdb72a;letter-spacing:2px}
+
+/* revista: sombra sem linha cortada */
+.leque{padding:40px 24px 110px;overflow-y:visible}
+.leque-dica{margin:-70px 0 34px;position:relative;z-index:2}
+.guides{overflow:hidden}
+
+/* sem blocos que sobraram */
+.about,.letrao{display:none}

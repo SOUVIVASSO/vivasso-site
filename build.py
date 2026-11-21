@@ -108,12 +108,11 @@ def header(home):
   </a>
   <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="nav-links" aria-label="Principal">
-    <a href="{prefixo}#servicos">Serviços</a>
+    <a href="{prefixo}#projetos">Projetos</a>
     <a href="{prefixo}#soul">Soul Experience</a>
     <a href="/revista/">Revista</a>
     <a href="/parceiros/">Parceiros</a>
     <a href="/jogos/">Jogos</a>
-    <a href="{prefixo}#sobre">Sobre</a>
     <a class="pill pill-sm" href="{prefixo}#contato">Fale com a gente</a>
   </nav>
 </header>"""
@@ -132,12 +131,11 @@ def footer(home):
     </div>
     <nav aria-label="Navegue">
       <h4>Navegue</h4>
-      <a href="/#servicos">Serviços</a>
+      <a href="/#projetos">Projetos</a>
       <a href="/#soul">Soul Experience</a>
       <a href="/revista/">Revista</a>
       <a href="/parceiros/">Parceiros</a>
       <a href="/jogos/">Jogos</a>
-      <a href="/#sobre">Sobre</a>
       <a href="/#contato">Contato</a>
     </nav>
     <nav aria-label="Informações legais">
@@ -342,7 +340,7 @@ def monta_home(posts):
     corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque).replace("{{HERO_VIDEO}}", HERO_V).replace("{{HERO_CLASSE}}", HERO_C).replace("{{MURAL}}", html_mural()).replace("{{MARCAS}}", html_marcas())
     return pagina(
         "Vivasso",
-        "A Vivasso é uma agência de marketing de wellness em Fortaleza. Eventos, revista, captação de patrocínio e agenciamento de influenciadores.",
+        "A Vivasso é uma agência de marketing de wellness em Fortaleza. Criamos o evento Soul Experience e a revista Viva Vivasso.",
         corpo, "/", home=True)
 
 
