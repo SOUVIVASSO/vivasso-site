@@ -22,7 +22,7 @@ VERSAO = str(int(time.time()))
 EMAIL = "contato@vivasso.com.br"
 INSTAGRAM = "https://instagram.com/souvivasso"
 WHATSAPP = "https://wa.me/message/M23TWJ2VIDWAJ1"
-PAGINAS_OCULTAS = {"/agenda/", "/cupons/", "/selos/"}
+PAGINAS_OCULTAS = {"/cupons/", "/selos/"}
 PAGINAS_COM_SELOS = {"/agenda/", "/cupons/", "/selos/", "/jogos/", "/jogos/respira/"}
 
 CATEGORIAS = [
@@ -111,8 +111,9 @@ def header(home):
     <a href="{prefixo}#projetos">Projetos</a>
     <a href="{prefixo}#soul">Soul Experience</a>
     <a href="/revista/">Revista</a>
-    <a href="/parceiros/">Parceiros</a>
+    <a href="/agenda/">Calendário</a>
     <a href="/jogos/">Jogos</a>
+    <a href="/servicos/">Serviços</a>
     <a class="pill pill-sm" href="{prefixo}#contato">Fale com a gente</a>
   </nav>
 </header>"""
@@ -134,8 +135,9 @@ def footer(home):
       <a href="/#projetos">Projetos</a>
       <a href="/#soul">Soul Experience</a>
       <a href="/revista/">Revista</a>
-      <a href="/parceiros/">Parceiros</a>
+      <a href="/agenda/">Calendário</a>
       <a href="/jogos/">Jogos</a>
+      <a href="/servicos/">Serviços</a>
       <a href="/#contato">Contato</a>
     </nav>
     <nav aria-label="Informações legais">
@@ -344,6 +346,39 @@ def monta_home(posts):
         corpo, "/", home=True)
 
 
+def monta_servicos():
+    corpo = f"""  <section class="blog-head">
+    <div class="wrap">
+      <p class="eyebrow">Serviços</p>
+      <h1>Além dos projetos, <span class="hl-serif">trabalhamos com você</span></h1>
+      <p>A Vivasso também atua com marcas, criadores e organizadores de eventos de bem-estar em Fortaleza.</p>
+    </div>
+  </section>
+  <section class="par-ganha">
+    <div class="wrap">
+      <div class="par-grade serv-pagina">
+        <div class="par-item rv"><span>01</span><h3>Captação de patrocínio</h3><p>Montamos propostas e levamos marcas para dentro de eventos de bem-estar, com formato e presença combinados.</p></div>
+        <div class="par-item rv"><span>02</span><h3>Agenciamento de influenciadores</h3><p>Conectamos marcas e eventos a criadores de conteúdo do universo wellness em Fortaleza.</p></div>
+        <div class="par-item rv"><span>03</span><h3>Direção e produção de eventos</h3><p>Planejamos e conduzimos eventos de bem-estar, da ideia ao dia, como fazemos no Soul Experience.</p></div>
+        <div class="par-item rv"><span>04</span><h3>Divulgação na Viva Vivasso</h3><p>Uma edição da revista dedicada ao seu evento ou à sua marca, com curadoria e divulgação.</p></div>
+      </div>
+      <p class="rv serv-ver"><a class="link" href="/parceiros/">Ver como funciona a parceria com o Soul Experience →</a></p>
+    </div>
+  </section>
+  <section class="par-passos">
+    <div class="wrap">
+      <p class="eyebrow eyebrow-claro rv">Vamos conversar</p>
+      <h2 class="section-title claro rv">Conte o que você precisa</h2>
+      <div class="par-botoes rv">
+        <a class="pill pill-amarelo" href="{WHATSAPP}" target="_blank" rel="noopener">Falar no WhatsApp <span aria-hidden="true">→</span></a>
+        <a class="link light" href="mailto:contato@vivasso.com.br?subject=Quero%20saber%20mais%20sobre%20os%20servi%C3%A7os">Falar por e-mail</a>
+      </div>
+    </div>
+  </section>"""
+    return pagina("Serviços", "Captação de patrocínio, agenciamento de influenciadores, direção de eventos e divulgação na revista Viva Vivasso, em Fortaleza.",
+                  corpo, "/servicos/", body_class="inner")
+
+
 def monta_parceiros():
     marcas = html_marcas()
     corpo = f"""  <section class="blog-head">
@@ -512,7 +547,7 @@ def monta_agenda(itens):
         aviso = '<p class="demo-note">Os eventos marcados como Exemplo são só para testar o visual.</p>'
     corpo = f"""  <section class="blog-head">
     <div class="wrap">
-      <p class="eyebrow">Agenda wellness</p>
+      <p class="eyebrow">Calendário</p>
       <h1>O que fazer <span class="hl-serif">na cidade</span></h1>
       <p>Corridas, aulas, feiras e experiências que fazem bem. Filtre por assunto e por dia.</p>
       <div class="chips" id="chips">{chips}</div>
@@ -535,10 +570,10 @@ def monta_agenda(itens):
 {grupos_agenda(itens)}
       </div>
       <p class="vazio" id="ev-vazio" hidden>Nada por aqui com esses filtros. Tente outro dia ou outro assunto.</p>
-      <p class="agenda-aviso">Datas, horários e preços podem mudar. Confira sempre no link de cada evento antes de se programar. Informações conferidas em 30 de outubro de 2026.</p>
+      <p class="agenda-aviso">Datas, horários e preços podem mudar. Confira sempre no link de cada evento antes de se programar.</p>
     </div>
   </section>"""
-    return pagina("Agenda", "Corridas, aulas, feiras e experiências de bem-estar em Fortaleza. Filtre por assunto e por dia.",
+    return pagina("Calendário", "Calendário de eventos de bem-estar em Fortaleza: corridas, aulas, feiras e experiências. Filtre por assunto e por dia.",
                   corpo, "/agenda/", body_class="inner")
 
 
@@ -997,6 +1032,7 @@ def main():
     escreve("/", monta_home(posts))
     escreve("/revista/", monta_revista(eds))
     escreve("/parceiros/", monta_parceiros())
+    escreve("/servicos/", monta_servicos())
     escreve("/blog/", monta_blog_antigo())
     escreve("/agenda/", monta_agenda(carrega_agenda()))
     escreve("/cupons/", monta_cupons(carrega_cupons()))
@@ -1006,7 +1042,7 @@ def main():
     escreve("/jogos/respira/", monta_respira())
     (ROOT / "404.html").write_text(monta_404(), encoding="utf-8")
     print("ok 404.html")
-    urls = ["/", "/revista/", "/parceiros/", "/jogos/", "/jogos/respira/"]
+    urls = ["/", "/revista/", "/agenda/", "/servicos/", "/parceiros/", "/jogos/", "/jogos/respira/"]
     for e in eds:
         escreve(f"/revista/edicao-{e['num']}/", monta_edicao(e))
         urls.append(f"/revista/edicao-{e['num']}/")

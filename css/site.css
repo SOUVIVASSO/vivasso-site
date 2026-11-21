@@ -941,3 +941,8 @@ html,body{overflow-x:clip}
 
 /* sem blocos que sobraram */
 .about,.letrao{display:none}
+
+/* SERVICOS PAGINA */
+.serv-pagina{grid-template-columns:repeat(2,1fr)}
+.serv-ver{margin-top:28px;font-size:17px}
+@media (max-width:900px){.serv-pagina{grid-template-columns:1fr}}
