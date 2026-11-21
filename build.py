@@ -339,7 +339,7 @@ def monta_home(posts):
                   ' aria-hidden="true"></video><div class="hero-veu" aria-hidden="true"></div>')
         HERO_C = " com-video"
     corpo = (ROOT / "templates" / "home.html").read_text(encoding="utf-8")
-    corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque).replace("{{HERO_VIDEO}}", HERO_V).replace("{{HERO_CLASSE}}", HERO_C).replace("{{MURAL}}", html_mural()).replace("{{MARCAS}}", html_marcas())
+    corpo = corpo.replace("{{HERO_CARD}}", hero_card).replace("{{REVISTA}}", leque).replace("{{CAL_SCRIPTS}}", eventos_json()).replace("{{HERO_VIDEO}}", HERO_V).replace("{{HERO_CLASSE}}", HERO_C).replace("{{MURAL}}", html_mural()).replace("{{MARCAS}}", html_marcas())
     return pagina(
         "Vivasso",
         "A Vivasso é uma agência de marketing de wellness em Fortaleza. Criamos o evento Soul Experience e a revista Viva Vivasso.",
@@ -531,6 +531,30 @@ def grupos_agenda(itens):
     return "\n".join(saida)
 
 
+def eventos_json():
+    saida = []
+    for e in carrega_agenda():
+        if e.get("demo"):
+            continue
+        item = {"t": e["title"], "c": e["category"]}
+        if e.get("days"):
+            item["w"] = [int(x) for x in str(e["days"]).split(",") if x.strip() != ""]
+            if e.get("when"):
+                item["q"] = e["when"]
+        else:
+            item["d"] = e["date"]
+            if e.get("end"):
+                item["e"] = e["end"]
+            if e.get("time"):
+                item["q"] = e["time"]
+        for chave, curta in (("local", "l"), ("bairro", "b"), ("price", "p"), ("link", "u"), ("link_text", "t2"), ("note", "n")):
+            if e.get(chave):
+                item[chave if False else curta] = e[chave]
+        saida.append(item)
+    bruto = json.dumps(saida, ensure_ascii=False).replace("</", "<\\/")
+    return f'<script type="application/json" id="eventos-json">{bruto}</script>\n<script src="/js/calendario.js?v={VERSAO}"></script>'
+
+
 def monta_agenda(itens):
     usadas = {e["category"] for e in itens}
     cats = [(s, n) for s, n in CATEGORIAS if s != "cupons" and s in usadas]
@@ -549,7 +573,7 @@ def monta_agenda(itens):
     <div class="wrap">
       <p class="eyebrow">Calendário</p>
       <h1>O que fazer <span class="hl-serif">na cidade</span></h1>
-      <p>Corridas, aulas, feiras e experiências que fazem bem. Filtre por assunto e por dia.</p>
+      <p>O que está rolando em Fortaleza: corridas, aulas, feiras e experiências que fazem bem. Veja por mês, semana ou ano.</p>
       <div class="chips" id="chips">{chips}</div>
       <div class="agenda-filters">
         {filtro_bairro}
@@ -564,7 +588,8 @@ def monta_agenda(itens):
       {aviso}
     </div>
   </section>
-  <section class="blog-list">
+  <section class="cal-secao"><div class="wrap"><div id="cal"></div></div></section>
+  <section class="blog-list" id="lista-sec">
     <div class="wrap">
       <div id="ev-list">
 {grupos_agenda(itens)}
@@ -572,7 +597,8 @@ def monta_agenda(itens):
       <p class="vazio" id="ev-vazio" hidden>Nada por aqui com esses filtros. Tente outro dia ou outro assunto.</p>
       <p class="agenda-aviso">Datas, horários e preços podem mudar. Confira sempre no link de cada evento antes de se programar.</p>
     </div>
-  </section>"""
+  </section>
+  {eventos_json()}"""
     return pagina("Calendário", "Calendário de eventos de bem-estar em Fortaleza: corridas, aulas, feiras e experiências. Filtre por assunto e por dia.",
                   corpo, "/agenda/", body_class="inner")
 
